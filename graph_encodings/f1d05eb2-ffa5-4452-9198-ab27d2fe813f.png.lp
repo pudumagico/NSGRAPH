@@ -1,0 +1,9 @@
+node(modernist,shabby,false,false,rocknroll,mccaords,small).
+node(concrete,dirty,false,false,none,mcgudy,tiny).
+node(victorian,shabby,true,false,swing,gluek,large).
+node(concrete,ratinfested,true,true,electronic,schroalls,mediumsized).
+edge(green,id828c2fcf861748c7acf4a87d27dc1fb7,greensceusk,gluek,mccaords).
+edge(green,id828c2fcf861748c7acf4a87d27dc1fb7,greensceusk,schroalls,gluek).
+edge(cyan,id5983b75b6d054b3f81f43bb1a0233217,cyanhydraav,mcgudy,schroalls).
+line(70,green,false,id828c2fcf861748c7acf4a87d27dc1fb7,greensceusk).
+line(80,cyan,true,id5983b75b6d054b3f81f43bb1a0233217,cyanhydraav).
