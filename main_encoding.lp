@@ -14,43 +14,128 @@
 % #show counted/2.
 % #show architecture/2.
 
-%Can you get rail connections at Schwoold?
-%end(2).pick_has_rail(2,1).station(1,0,schwoold).
+
+arqs(A) :- node(A,C,D,R,M,N,S).
+cleans(C) :- node(A,C,D,R,M,N,S).
+dissas(D) :- node(A,C,D,R,M,N,S).
+rails(R) :- node(A,C,D,R,M,N,S).
+musics(M) :- node(A,C,D,R,M,N,S).
+sizes(S) :- node(A,C,D,R,M,N,S).
+
 station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) :- station(T,0,NAME), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-has_rail(T+1, RAIL) :- pick_has_rail(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+line(T, BUILT,COLOR,AIRCON,ID,NAME)                                 :- line(T,0,NAME), line(BUILT,COLOR,AIRCON,ID,NAME).
+
+architecture(T+1, ARCHITECTURE) :- pick_architecture(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+cleanliness(T+1, CLEANLINESS)   :- pick_cleanliness(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+disaccess(T+1, DISACCESS)       :- pick_disabled_access(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+has_rail(T+1, RAIL)             :- pick_has_rail(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+music(T+1, MUSIC)               :- pick_music(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+size(T+1, SIZE)                 :- pick_size(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+id(T+1,ID)                      :- pick_id(T+1,T), line(T, BUILT,COLOR,AIRCON,ID,NAME).
+
+edge(T+1, COLOR,LINEID,LINENAME,STATION1,STATION2)  :- allEdges(T+1,T), edge(COLOR,LINEID,LINENAME,STATION1,STATION2).
+edge(T+1, COLOR,ID,LINENAME,STATION1,STATION2)      :- filter_line_id(T+1,T), id(T,ID), edge(T,COLOR,ID,LINENAME,STATION1,STATION2).
+
+node(T+1, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION1,SIZE)  :- nodes(T+1,T), edge(T, COLOR,ID,LINENAME,STATION1,STATION2), 
+                                                                        node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION1,SIZE).
+node(T+1, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION2,SIZE)  :- nodes(T+1,T), edge(T, COLOR,ID,LINENAME,STATION1,STATION2), 
+                                                                        node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION2,SIZE).
+
+architecture(T+1, NAME, ARCHITECTURE)   :- pluck_architecture(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+music(T+1, NAME, MUSIC)                 :- pluck_music(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+size(T+1, NAME, SIZE)                   :- pluck_size(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+disaccess(T+1, NAME, DISACCESS)         :- pluck_disabled_access(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+rail(T+1, NAME, RAIL)                   :- pluck_has_rail(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+cleanliness(T+1, NAME, CLEANLINESS)     :- pluck_cleanliness(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+
+uniqued(T+1, ARCHITECTURE)              :- unique(T+1,T), architecture(T, NAME, ARCHITECTURE).
+uniqued(T+1, MUSIC)                     :- unique(T+1,T), music(T, NAME, MUSIC).
+uniqued(T+1, SIZE)                      :- unique(T+1,T), size(T, NAME, SIZE).
+
+counted(T+1, C) :- count(T+1,T), C = #count{VAL: uniqued(T, VAL)}.
+counted(T+1, C) :- countIfEqual(T+1, T, RAIL), rails(RAIL), C = #count{NAME,RAIL: rail(T, NAME, RAIL)}.
+counted(T+1, C) :- countIfEqual(T+1, T, SIZE), sizes(SIZE), C = #count{NAME,SIZE: size(T, NAME, SIZE)}.
+counted(T+1, C) :- countIfEqual(T+1, T, MUSIC), musics(MUSIC), C = #count{NAME,MUSIC: music(T, NAME, MUSIC)}.
+counted(T+1, C) :- countIfEqual(T+1, T, CLEANLINESS), cleans(CLEANLINESS), C = #count{NAME,CLEANLINESS: cleanliness(T, NAME, CLEANLINESS)}.
+counted(T+1, C) :- countIfEqual(T+1, T, DISACCESS), dissas(DISACCESS), C = #count{NAME,DISACCESS: disaccess(T, NAME, DISACCESS)}.
+% counted(T, 0)   :- countIfEqual(T,_,_), not counted(T,_), end(T).
+
+% #show counted/2.
+
+%How many stations are between Mccaords and Schroalls?
+%end(4).count(3,2).shortestPath(2,1).station(1,0,mccaords).station(1,0,schroalls).
+
+sp(T+1, NAME, NAME')    :-  shortestPath(T+1,T), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE), 
+                            station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
+start(NAME)             :-  sp(T, NAME, NAME').
+finish(NAME')           :-  sp(T, NAME, NAME').
+
+0 { selected(S1,S2); selected(S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, NAME, NAME').
+path(A,B)             :- selected(A,B).
+path(X,Z)             :- path(X,Y), path(Y,Z).
+
+:- start(X), finish(Y), not path(X,Y).
+
+cost(T+2, C-1) :- count(T+1,T), C = #count { X,Y : selected(X,Y) }, sp(T,NAME,NAME').
+#minimize { C : cost(T, C) }.
+
 ans(V) :- end(T), has_rail(T,V).
+ans(V) :- end(T), disaccess(T,V).
+ans(V) :- end(T), architecture(T,V).
+ans(V) :- end(T), music(T,V).
+ans(V) :- end(T), size(T,V).
+ans(V) :- end(T), cleanliness(T,V).
+ans(V) :- end(T), counted(T,V).
+ans(V) :- end(T), cost(T,V).
+
+
+
+%How many stations are on the shortest path between Mcgudy and Gluek avoiding clean stations?
+%end(4).count(3,2).shortestPathOnlyUsing_cleanliness(2, 1, clean).station(1,0,mcgudy).station(1,0,gluek).
+
+% sp(T+1, NAME, NAME') :- shortestPathOnlyUsing_cleanliness(T+1,T, X), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) , station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
+% 0 { selected(S1,S2); selected(S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, NAME, NAME'), shortestPathOnlyUsing_cleanliness(T,T-1, X),  station(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,S1,SIZE),  station(ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',S2,SIZE'), CLEANLINESS!=X, CLEANLINESS'!=X.
+
+% %How many other stations are two stops or closer to Schroalls?
+% %end(3).count(3,2).withinHops(2,1, 2).station(1,0,schroalls).
+
+% start(NAME) :- withinHops(T+1,T, S), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
+% finish(Y) :- start(X), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,Y,SIZE), X!=Y.
+
+% 0 { selected(X,S1,S2); selected(X,S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2) , finish(X).
+% path(X, A,B) :- selected(X,A,B).
+% path(A,X,Z) :- path(A, X,Y), path(A,Y,Z).
+% path (X,Y) :- path(Y,X,Y).
+% :- start(X), finish(Y), not path(Y,X,Y).
+% dist(X, Y, C) :- C = #count { Y,A,B : selected(Y,A,B) }, start(X), finish(Y).
+% #minimize { X,Y,C : dist(X, Y, C) }.
+
+% nearby(T+2,C) :- count(T+2,T+1), withinHops(T+1,T, S), C = #count{1,X,Y,D : dist(X,Y,D), D <= S} , start(X).
+% ans(V) :- end(T), nearby(T,V).
+
+% #show dist/3.
+% #show music/3.
+% #show path/2.
+% #show cost/2.
+% #show selected/2.
+
 
 %How many architectural styles does Red Skeary pass through?
 %end(7).count(7,6).unique(6,5).pluck_architecture(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
 
-line(T, BUILT,COLOR,AIRCON,ID,NAME) :- line(T,0,NAME), line(BUILT,COLOR,AIRCON,ID,NAME).
-id(T+1,ID) :- pick_id(T+1,T), line(T, BUILT,COLOR,AIRCON,ID,NAME).
-edge(T+1, COLOR,LINEID,LINENAME,STATION1,STATION2) :- allEdges(T+1,T), edge(COLOR,LINEID,LINENAME,STATION1,STATION2).
-edge(T+1, COLOR,ID,LINENAME,STATION1,STATION2) :- filter_line_id(T+1,T), id(T,ID), edge(T,COLOR,ID,LINENAME,STATION1,STATION2).
-node(T+1, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION1,SIZE) :- nodes(T+1,T), edge(T, COLOR,ID,LINENAME,STATION1,STATION2), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION1,SIZE).
-node(T+1, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION2,SIZE) :- nodes(T+1,T), edge(T, COLOR,ID,LINENAME,STATION1,STATION2), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,STATION2,SIZE).
-architecture(T+1, NAME, ARCHITECTURE) :- pluck_architecture(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-uniqued(T+1, ARCHITECTURE) :- unique(T+1,T), architecture(T, NAME, ARCHITECTURE).
-counted(T+1,C) :- count(T+1,T), C=#count{1,VAL: uniqued(T, VAL)}.
-ans(V) :- end(T), counted(T,V).
 
 
 %How many music styles does Red Skeary pass through?
 %end(7).count(7,6).unique(6,5).pluck_music(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-music(T+1, NAME, MUSIC) :- pluck_music(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-uniqued(T+1, MUSIC) :- unique(T+1,T), music(T, NAME, MUSIC).
+
 
 %How many sizes of station does Pink Slaends pass through?
 %end(7).count(7,6).unique(6,5).pluck_size(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
-
-size(T+1, NAME, SIZE) :- pluck_size(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-uniqued(T+1, SIZE) :- unique(T+1,T), size(T, NAME, SIZE).
 
 
 % How many stations playing swing does Pink Slaends pass through?
 % end(6).countIfEqual(6, 5, swing).pluck_music(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
 
-counted(T+1, C) :- countIfEqual(T+1, T, MUSIC), C = #count{1,NAME,MUSIC: music(T, NAME, MUSIC)}.
 
 %How many derilict stations does Pink Slaends pass through?
 %end(6).countIfEqual(6, 5, derilict).pluck_cleanliness(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
@@ -61,98 +146,60 @@ counted(T+1, C) :- countIfEqual(T+1, T, MUSIC), C = #count{1,NAME,MUSIC: music(T
 %How many small stations does Pink Slaends pass through?
 %end(6).countIfEqual(6, 5, small).pluck_size(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
 
-size(T+1, NAME, SIZE) :- pluck_size(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-counted(T+1, C) :- countIfEqual(T+1, T, SIZE), C = #count{1,NAME,SIZE: size(T, NAME, SIZE)}.
-
 %How many stations with disabled access does Red Skeary pass through?
 %end(6).countIfEqual(6, 5, true).pluck_disabled_access(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-
-disaccess(T+1, NAME, DISACCESS) :- pluck_disabled_access(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-counted(T+1, C) :- countIfEqual(T+1, T, DISACCESS), C = #count{1,NAME,DISACCESS: disaccess(T, NAME, DISACCESS)}.
 
 %How many stations with rail connections does Red Skeary pass through?
 %end(6).countIfEqual(6, 5, true).pluck_has_rail(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
 
-rail(T+1, NAME, RAIL) :- pluck_has_rail(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-counted(T+1, C) :- countIfEqual(T+1, T, RAIL), C = #count{1,NAME,RAIL: rail(T, NAME, RAIL)}.
-
 %0 How clean is Kriits?
 %end(2).pick_cleanliness(2,1).station(1,0,kriits).
-
-cleanliness(T+1, CLEANLINESS) :- pick_cleanliness(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-ans(V) :- end(T), cleanliness(T,V).
 
 %How big is Kriits?
 %end(2).pick_size(2,1).station(1,0,kriits).
 
-size(T+1, SIZE) :- pick_size(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-ans(V) :- end(T), size(T,V).
 
 %What music plays at Kriits?
 %end(2).pick_music(2,1).station(1,0,kriits).
 
-music(T+1, MUSIC) :- pick_music(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-ans(V) :- end(T), music(T,V).
 
 %What architectural style is Scuys?
 %end(2).pick_architecture(2,1).station(1,0,scuys).
 
-architecture(T+1, ARCHITECTURE) :- pick_architecture(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-ans(V) :- end(T), architecture(T,V).
 
 %Does Ghoow have disabled access?
 %end(2).pick_disabled_access(2,1).station(1,0,ghoow).
 
-disaccess(T+1, DISACCESS) :- pick_disabled_access(T+1,T), station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-ans(V) :- end(T), disaccess(T,V).
 
 % How many rat-infested stations does Green Sceusk pass through?
 % end(6).countIfEqual(6, 5, rat-infested).pluck_cleanliness(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,greensceusk).
 
-cleanliness(T+1, NAME, CLEANLINESS) :- pluck_cleanliness(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-counted(T+1, C) :- countIfEqual(T+1, T, CLEANLINESS), C = #count{CLEANLINESS,NAME: cleanliness(T, NAME, CLEANLINESS)}.
 
 
-%How many stations are between Mccaords and Schroalls?
-%end(4).count(3,2).shortestPath(2,1).station(1,0,mccaords).station(1,0,schroalls).
 
-sp(T+1, NAME, NAME') :- shortestPath(T+1,T), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) , station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
-start(NAME):- sp(T, NAME, NAME').
-finish(NAME'):- sp(T, NAME, NAME').
 
-0 { selected(S1,S2); selected(S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, NAME, NAME').
-path(X, A,B) :- selected(X,A,B).
-path(A,X,Z) :- path(A, X,Y), path(A,Y,Z).
-:- start(X), finish(Y), not path(Y,X,Y).
-cost(T+1, C) :- count(T+1,T), C = #count { X,Y : selected(X,Y) }, sp(T,NAME,NAME').
-#minimize { C : cost(T, C) }.
 
-ans(V) :- end(T+1), cost(T,V).
 
-%How many stations are on the shortest path between Mcgudy and Gluek avoiding clean stations?
-%end(4).count(3,2).shortestPathOnlyUsing_cleanliness(2, 1, clean).station(1,0,mcgudy).station(1,0,gluek).
 
-sp(T+1, NAME, NAME') :- shortestPathOnlyUsing_cleanliness(T+1,T, X), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) , station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
-0 { selected(S1,S2); selected(S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, NAME, NAME'), shortestPathOnlyUsing_cleanliness(T,T-1, X),  station(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,S1,SIZE),  station(ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',S2,SIZE'), CLEANLINESS!=X, CLEANLINESS'!=X.
 
-%How many other stations are two stops or closer to Schroalls?
-%end(3).count(3,2).withinHops(2,1, 2).station(1,0,schroalls).
 
-start(NAME) :- withinHops(T+1,T, S), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-finish(Y) :- start(X), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,Y,SIZE), X!=Y.
 
-0 { selected(X,S1,S2); selected(X,S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2) , finish(X).
-path(X, A,B) :- selected(X,A,B).
-path(A,X,Z) :- path(A, X,Y), path(A,Y,Z).
-path (X,Y) :- path(Y,X,Y).
-:- start(X), finish(Y), not path(Y,X,Y).
-dist(X, Y, C) :- C = #count { Y,A,B : selected(Y,A,B) }, start(X), finish(Y).
-#minimize { X,Y,C : dist(X, Y, C) }.
 
-nearby(T+2,C) :- count(T+2,T+1), withinHops(T+1,T, S), C = #count{1,X,Y,D : dist(X,Y,D), D <= S} , start(X).
-ans(V) :- end(T), nearby(T,V).
 
-#show dist/3.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % % Scene rule
 % obj(T+1,ID,SIZE,COLOR,MATERIAL,SHAPE,X1,Y1,X2,Y2) :- scene(T,0), obj(0,ID,SIZE,COLOR,MATERIAL,SHAPE,X1,Y1,X2,Y2).
 
