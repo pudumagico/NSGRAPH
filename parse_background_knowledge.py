@@ -37,7 +37,7 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
                 correspondent_info = bkg_info_node
         
         node_pred = node_pred_template.format(
-            architecture=correspondent_info['architecture'],
+            architecture=correspondent_info['architecture'].replace("-", ""),
             cleanliness=correspondent_info['cleanliness'].replace("-", ""),
             disabled_access=str(correspondent_info['disabled_access']).lower(),
             has_rail=str(correspondent_info['has_rail']).lower(),

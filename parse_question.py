@@ -108,8 +108,8 @@ def parse_questions(yaml_filepath, graph_id):
                             step[2], step[2] - 1, str(last_val).replace("-", "").replace(" ", "").lower()))    
 
                     elif step[0] == 'ShortestPathOnlyUsing':
-                        lp_program.append("shortestPathOnlyUsing_{}({}, {}, {}).".format(
-                            step[1][2]['Without'][1], step[2], step[2] - 1, list(step[1][2]['Without'][2].values())[0][0]))                           
+                        lp_program.append("shortestPathOnlyUsing{}({}, {}, {}).".format(
+                            step[1][2]['Without'][1], step[2], step[2] - 1, list(step[1][2]['Without'][2].values())[0][0].replace('-', '')))                           
                     elif step[0] == 'WithinHops':
                         lp_program.append("withinHops({},{}, {}).".format(
                             step[2], step[2] - 1, step[1][1]))   

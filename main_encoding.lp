@@ -15,12 +15,12 @@
 % #show architecture/2.
 
 
-arqs(A) :- node(A,C,D,R,M,N,S).
-cleans(C) :- node(A,C,D,R,M,N,S).
-dissas(D) :- node(A,C,D,R,M,N,S).
-rails(R) :- node(A,C,D,R,M,N,S).
-musics(M) :- node(A,C,D,R,M,N,S).
-sizes(S) :- node(A,C,D,R,M,N,S).
+arqs(A)     :- node(A,C,D,R,M,N,S).
+cleans(C)   :- node(A,C,D,R,M,N,S).
+dissas(D)   :- node(A,C,D,R,M,N,S).
+rails(R)    :- node(A,C,D,R,M,N,S).
+musics(M)   :- node(A,C,D,R,M,N,S).
+sizes(S)    :- node(A,C,D,R,M,N,S).
 
 station(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) :- station(T,0,NAME), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
 line(T, BUILT,COLOR,AIRCON,ID,NAME)                                 :- line(T,0,NAME), line(BUILT,COLOR,AIRCON,ID,NAME).
@@ -58,7 +58,6 @@ counted(T+1, C) :- countIfEqual(T+1, T, SIZE), sizes(SIZE), C = #count{NAME,SIZE
 counted(T+1, C) :- countIfEqual(T+1, T, MUSIC), musics(MUSIC), C = #count{NAME,MUSIC: music(T, NAME, MUSIC)}.
 counted(T+1, C) :- countIfEqual(T+1, T, CLEANLINESS), cleans(CLEANLINESS), C = #count{NAME,CLEANLINESS: cleanliness(T, NAME, CLEANLINESS)}.
 counted(T+1, C) :- countIfEqual(T+1, T, DISACCESS), dissas(DISACCESS), C = #count{NAME,DISACCESS: disaccess(T, NAME, DISACCESS)}.
-% counted(T, 0)   :- countIfEqual(T,_,_), not counted(T,_), end(T).
 
 % #show counted/2.
 
@@ -79,6 +78,9 @@ path(X,Z)             :- path(X,Y), path(Y,Z).
 cost(T+2, C-1) :- count(T+1,T), C = #count { X,Y : selected(X,Y) }, sp(T,NAME,NAME').
 #minimize { C : cost(T, C) }.
 
+
+
+
 ans(V) :- end(T), has_rail(T,V).
 ans(V) :- end(T), disaccess(T,V).
 ans(V) :- end(T), architecture(T,V).
@@ -86,98 +88,12 @@ ans(V) :- end(T), music(T,V).
 ans(V) :- end(T), size(T,V).
 ans(V) :- end(T), cleanliness(T,V).
 ans(V) :- end(T), counted(T,V).
+% ans(V) :- end(T), countedR(T,V).
+% ans(V) :- end(T), countedS(T,V).
+% ans(V) :- end(T), countedM(T,V).
+% ans(V) :- end(T), countedC(T,V).
+% ans(V) :- end(T), countedD(T,V).
 ans(V) :- end(T), cost(T,V).
-
-
-
-%How many stations are on the shortest path between Mcgudy and Gluek avoiding clean stations?
-%end(4).count(3,2).shortestPathOnlyUsing_cleanliness(2, 1, clean).station(1,0,mcgudy).station(1,0,gluek).
-
-% sp(T+1, NAME, NAME') :- shortestPathOnlyUsing_cleanliness(T+1,T, X), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE) , station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
-% 0 { selected(S1,S2); selected(S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, NAME, NAME'), shortestPathOnlyUsing_cleanliness(T,T-1, X),  station(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,S1,SIZE),  station(ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',S2,SIZE'), CLEANLINESS!=X, CLEANLINESS'!=X.
-
-% %How many other stations are two stops or closer to Schroalls?
-% %end(3).count(3,2).withinHops(2,1, 2).station(1,0,schroalls).
-
-% start(NAME) :- withinHops(T+1,T, S), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-% finish(Y) :- start(X), node(ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,Y,SIZE), X!=Y.
-
-% 0 { selected(X,S1,S2); selected(X,S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2) , finish(X).
-% path(X, A,B) :- selected(X,A,B).
-% path(A,X,Z) :- path(A, X,Y), path(A,Y,Z).
-% path (X,Y) :- path(Y,X,Y).
-% :- start(X), finish(Y), not path(Y,X,Y).
-% dist(X, Y, C) :- C = #count { Y,A,B : selected(Y,A,B) }, start(X), finish(Y).
-% #minimize { X,Y,C : dist(X, Y, C) }.
-
-% nearby(T+2,C) :- count(T+2,T+1), withinHops(T+1,T, S), C = #count{1,X,Y,D : dist(X,Y,D), D <= S} , start(X).
-% ans(V) :- end(T), nearby(T,V).
-
-% #show dist/3.
-% #show music/3.
-% #show path/2.
-% #show cost/2.
-% #show selected/2.
-
-
-%How many architectural styles does Red Skeary pass through?
-%end(7).count(7,6).unique(6,5).pluck_architecture(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-
-
-
-%How many music styles does Red Skeary pass through?
-%end(7).count(7,6).unique(6,5).pluck_music(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-
-
-%How many sizes of station does Pink Slaends pass through?
-%end(7).count(7,6).unique(6,5).pluck_size(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
-
-
-% How many stations playing swing does Pink Slaends pass through?
-% end(6).countIfEqual(6, 5, swing).pluck_music(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
-
-
-%How many derilict stations does Pink Slaends pass through?
-%end(6).countIfEqual(6, 5, derilict).pluck_cleanliness(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
-
-% clean(T+1, NAME, CLEANLINESS) :- pluck_cleanliness(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE).
-% counted(T+1, C) :- countIfEqual(T+1, T, CLEANLINESS), C = #count{1,NAME,CLEANLINESS: clean(T, NAME, CLEANLINESS)}.
-
-%How many small stations does Pink Slaends pass through?
-%end(6).countIfEqual(6, 5, small).pluck_size(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,pinkslaends).
-
-%How many stations with disabled access does Red Skeary pass through?
-%end(6).countIfEqual(6, 5, true).pluck_disabled_access(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-
-%How many stations with rail connections does Red Skeary pass through?
-%end(6).countIfEqual(6, 5, true).pluck_has_rail(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,redskeary).
-
-%0 How clean is Kriits?
-%end(2).pick_cleanliness(2,1).station(1,0,kriits).
-
-%How big is Kriits?
-%end(2).pick_size(2,1).station(1,0,kriits).
-
-
-%What music plays at Kriits?
-%end(2).pick_music(2,1).station(1,0,kriits).
-
-
-%What architectural style is Scuys?
-%end(2).pick_architecture(2,1).station(1,0,scuys).
-
-
-%Does Ghoow have disabled access?
-%end(2).pick_disabled_access(2,1).station(1,0,ghoow).
-
-
-% How many rat-infested stations does Green Sceusk pass through?
-% end(6).countIfEqual(6, 5, rat-infested).pluck_cleanliness(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,greensceusk).
-
-
-
-
-
 
 
 
