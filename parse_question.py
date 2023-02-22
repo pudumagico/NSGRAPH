@@ -1,8 +1,5 @@
-import nntplib
 import yaml
-import sys
-from operator import itemgetter
-from pprint import pprint
+import re
 
 def get_all_keys(d, i):
     for key, value in d.items():
@@ -25,235 +22,266 @@ def parse_questions(yaml_filepath, graph_id):
         answers = []
         for data in docs:
             if data['graph']['id'] == graph_id:
-                
-                print(data['question']['english'])
-                # print(data['answer'])
-                
-                print(data['question']['functional'])
-
-                f_program = data['question']['functional']
-                # print(f_program)
-                aux = []
-
-                for x in get_all_keys(f_program, 0):
-                    aux.append(list(x))
-
-                steps = max(aux, key=itemgetter(2))[2]
-
-                for x in aux:
-                    x[2] = steps - x[2]
-
-                # print(aux)
-
-                lp_program = []
-
-                '''
-                [['Count', [{'Unique': [{'Pluck': [{'Nodes': [{'Filter': [{'AllEdges': []}, 'line_id', {'Pick': [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id']}]}]}, 'architecture']}]}], 7], 
-                ['Unique', [{'Pluck': [{'Nodes': [{'Filter': [{'AllEdges': []}, 'line_id', {'Pick': [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id']}]}]}, 'architecture']}], 6], 
-                ['Pluck', [{'Nodes': [{'Filter': [{'AllEdges': []}, 'line_id', {'Pick': [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id']}]}]}, 'architecture'], 5], 
-                ['Nodes', [{'Filter': [{'AllEdges': []}, 'line_id', {'Pick': [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id']}]}], 4], 
-                ['Filter', [{'AllEdges': []}, 'line_id', {'Pick': [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id']}], 3], 
-                ['AllEdges', [], 2], 
-                ['Pick', [{'Line': [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}]}, 'id'], 2], 
-                ['Line', [{'built': '90s', 'color': 'brown', 'has_aircon': True, 'id': '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 'name': 'Brown Shaif', 'stroke': 'solid'}], 1], 
-                ['built', '90s', 0], ['color', 'brown', 0], ['has_aircon', True, 0], ['id', '5d4d0bdf-2818-4a5f-86ce-2080686c9454', 0], ['name', 'Brown Shaif', 0], ['stroke', 'solid', 0]]
-                '''
-                # pprint(aux)
-                lp_program.append("end({}).".format(aux[0][2]))           
-
-                for step in aux:
-                    if step[0] == 'Pick':
-                        lp_program.append("pick_{}({},{}).".format(
-                            step[1][1], step[2], step[2] - 1))
-                    elif step[0] == 'Station':
-                        lp_program.append("station({},{},{}).".format(
-                            step[2], step[2] - 1, step[1][0]['name'].lower()))
-                    elif step[0] == 'Line':
-                        lp_program.append("line({},{},{}).".format(
-                            step[2], step[2] - 1, step[1][0]['name'].replace(" ", "").lower()))
-                    elif step[0] == 'AllEdges':
-                        lp_program.append("allEdges({},{}).".format(
-                            step[2], step[2] - 1))
-                    elif step[0] == 'Filter':
-                        # last_val = None
-                        # if isinstance(step[1][-1], dict):
-                        #     last_val = list(step[1][-1].values())[0][0]
-                        # else:
-                        #     last_val = step[1][-1]
-                        lp_program.append("filter_{}({},{}).".format(
-                            step[1][1], step[2], step[2] - 1))
-                    elif step[0] == 'Nodes':
-                        lp_program.append("nodes({},{}).".format(
-                            step[2], step[2] - 1))
-                    elif step[0] == 'Edges':
-                        lp_program.append("edges({},{}).".format(
-                            step[2], step[2] - 1))
-                    elif step[0] == 'Pluck':
-                        lp_program.append("pluck_{}({},{}).".format(
-                            step[1][1], step[2], step[2] - 1))
-                    elif step[0] == 'Unique':
-                        lp_program.append("unique({},{}).".format(
-                            step[2], step[2] - 1))
-                    elif step[0] == 'Count':
-                        lp_program.append("count({},{}).".format(
-                            step[2], step[2] - 1))   
-                    elif step[0] == 'CountIfEqual':
-                        last_val = None
-                        if isinstance(step[1][1], dict):
-                            last_val = list(step[1][-1].values())[0][0]
-                        else:
-                            last_val = step[1][-1]
-
-                        lp_program.append("countIfEqual({}, {}, {}).".format(
-                            step[2], step[2] - 1, str(last_val).replace("-", "").replace(" ", "").lower()))    
-
-                    elif step[0] == 'ShortestPathOnlyUsing':
-                        lp_program.append("shortestPathOnlyUsing{}({}, {}, {}).".format(
-                            step[1][2]['Without'][1], step[2], step[2] - 1, list(step[1][2]['Without'][2].values())[0][0].replace('-', '')))                           
-                    elif step[0] == 'WithinHops':
-                        lp_program.append("withinHops({},{}, {}).".format(
-                            step[2], step[2] - 1, step[1][1]))   
-                    elif step[0] == 'Paths':
-                        lp_program.append("paths({},{}).".format(
-                            step[2], step[2] - 1))   
-                    elif step[0] == 'HasCycle':
-                        lp_program.append("hasCycle({},{}).".format(
-                            step[2], step[2] - 1))  
-                    elif step[0] == 'ShortestPath':
-                        lp_program.append("shortestPath({},{}).".format(
-                            step[2], step[2] - 1))  
-                    elif step[0] == 'Equal':
-                        lp_program.append("equal({},{}, {}).".format(
-                            step[2], step[2] - 1, step[1][1]))             
-                    elif step[0] == 'HasIntersection':
-                        lp_program.append("HasIntersection({},{}).".format(
-                            step[2], step[2] - 1))     
-                    elif step[0] == 'Mode':
-                        lp_program.append("Mode({},{}).".format(
-                            step[2], step[2] - 1))  
-
-
-                #still many things to do
-                    
-                # if i == 33:
-                #     break
-                # i += 1
-                # print(lp_program)
-                questions.append(''.join(lp_program))
-                questions_nl.append(data['question']['english'])
+                question_nl = data['question']['english']
+                questions_nl.append(questions_nl)
                 answers.append(data['answer'])
+                # f_program = data['question']['functional']
+                
+                for i, regex in enumerate(question_forms):
+                    match = regex.match(question_nl)
+                    if match:
+                        args = list(match.groups())
+                        asp_question = question_form_asp[i].format(*args)
+                        print(asp_question)
+                        questions.append(asp_question)
+                        break
+                        
+                
+                
 
     return questions, questions_nl, answers
 
-            # break 
-                # while isinstance(f_program, dict):
-                #     keys = f_program.keys()
-                #     for key in keys:
 
-                # if f_program.keys()[0] == 'Pick':
-                #     lp_program.append(('pick', f_program['Pick'][1]))
-                # elif f_program.keys()[0] == 'Station':
-                #     lp_program.append(f_program['Station'])
-                # f_program = f_program
+question_forms = [
 
-            # print(x['question']['english'])
-            # print(x['question']['functional'])
-            # print(x['answer'])
+	# --------------------------------------------------------------------------
+	# Station properties
+	# --------------------------------------------------------------------------
+		re.compile("How clean is ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "cleanliness")),
+		# "StationPropertyCleanliness"),
+		re.compile("What is the cleanliness level of ([a-zA-Z]+) station\?"), 
+		# (lambda s: Pick(s, "cleanliness")),
+		# "StationPropertyCleanliness2"),
+		re.compile("How big is ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "size")),
+		# "StationPropertySize"),
+		re.compile("What size is ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "size")),
+		# "StationPropertySize2"),
+		re.compile("What music plays at ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "music")),
+		# "StationPropertyMusic"),
+		re.compile("At ([a-zA-Z]+) what sort of music plays\?"), 
+		# (lambda s: Pick(s, "music")),
+		# "StationPropertyMusic2"),
+		re.compile("What architectural style is ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "architecture")),
+		# "StationPropertyArchitecture"),
+		re.compile("Describe ([a-zA-Z]+) station's architectural style."), 
+		# (lambda s: Pick(s, "architecture")),
+		# "StationPropertyArchitecture2"),
+		re.compile("Does ([a-zA-Z]+) have disabled access\?"), 
+		re.compile("Is there disabled access at ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "disabled_access")),
+		# "StationPropertyDisabledAccess2"),
+		re.compile("Does ([a-zA-Z]+) have rail connections\?"), 
+		# (lambda s: Pick(s, "has_rail")),
+		# "StationPropertyHasRail"),
+		re.compile("Can you get rail connections at ([a-zA-Z]+)\?"), 
+		# (lambda s: Pick(s, "has_rail")),
+		# "StationPropertyHasRail2"),
 
-actions = {
-    "Station": "station({T},{T1}, {name})",
-    "Line": "station({T},{T1}, {name})",
-    "Edge": "station({T},{T1}, {name})",
-    "Pick": "pick_{}({T},{T1})",
-    "AllEdges": "",
-    "AllNodes": "",
-    "Filter": "",
-    "Nodes": "",
-    "Pluck": "",
-    "Count": "",
-    "CountIfEqual": "",
-    "ShortestPath": "",
-    "Paths": "",
-    "HasCycle": "",
-}
+	# ------------------------------------------------------------e--------------
+	# Line questions
+	# --------------------------------------------------------------------------
+	
+		re.compile("How many architectural styles does ([a-zA-Z]+) pass through\?"), 
+		# (lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 						  "architecture"))) ),
+		# "LineTotalArchitectureCount"),
+		re.compile("How many music styles does ([a-zA-Z]+) pass through\?"), 
+		# (lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 						  "music"))) ),
+		# "LineTotalMusicCount"),
+		re.compile("How many sizes of station does ([a-zA-Z]+) pass through\?"), 
+		# (lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+								#   "size"))) ),
+		re.compile("How many stations playing ([a-zA-Z]+) does ([a-zA-Z]+) pass through\?"), 
+		# lambda v, l: CountIfEqual(
+		# 	Pluck(
+		# 		Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 		"music"
+		# 	),
+		# 	v
+		# ),
+		# "LineFilterMusicCount"),
+		re.compile("How many ([a-zA-Z]+) stations does ([a-zA-Z]+) pass through\?"), 
+		# lambda v, l: CountIfEqual(
+		# 	Pluck(
+		# 		Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 		"size"
+		# 	),
+		# 	v
+		# ),
+		# "LineFilterSizeCount"),
+		re.compile("How many stations with disabled access does ([a-zA-Z]+) pass through\?"), 
+		# lambda l: CountIfEqual(
+		# 	Pluck(
+		# 		Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 		"disabled_access"
+		# 	),
+		# 	True
+		# ),
+		# "LineFilterDisabledAccessCount"),
+		re.compile("How many stations with rail connections does ([a-zA-Z]+) pass through\?"), 
+		# lambda l: CountIfEqual(
+		# 	Pluck(
+		# 		Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+		# 		"has_rail"
+		# 	),
+		# 	True
+		# ),
+		# "LineFilterHasRailCount"),
+
+	
+	# --------------------------------------------------------------------------
+	# MultiStep graph algorithms question set
+	# --------------------------------------------------------------------------
+		re.compile("How many stations are between ([a-zA-Z]+) and ([a-zA-Z]+)\?"), 
+		# (lambda n1,n2: CountNodesBetween(ShortestPath(n1, n2, []))),
+		# "StationShortestCount",
+		# arguments_valid=lambda g, n1, n2: n1 != n2,
+		# answer_valid=lambda g, a, n1, n2: a >= 0,
+		# group="MultiStep"),
+		re.compile("How many stations are on the shortest path between ([a-zA-Z]+) and ([a-zA-Z]+) avoiding ([a-zA-Z]+) stations\?"), 
+		# (lambda n1, n2 ,c: CountNodesBetween(ShortestPathOnlyUsing(n1, n2, Without(AllNodes(), "cleanliness", c), []))),
+		# "StationShortestAvoidingCount",
+		# arguments_valid=lambda g, n1, n2, c: n1 != n2,
+		# answer_valid=lambda g, a, n1, n2, c: a >= 0,
+		# group="MultiStep"),
+	# 'two hops away'
+		re.compile("How many other stations are two stops or closer to ([a-zA-Z]+)\?"), 
+		# (lambda a: Count(WithinHops(a, 2))),
+		# "StationTwoHops",
+		# group="MultiStep"),
 
 
-def encode_question(program):
-    pass
+		re.compile("What's the nearest station to ([a-zA-Z]+) with ([a-zA-Z]+) architecture\?"),
+		# lambda x, a: Pick(MinBy(
+		# 	FilterHasPathTo(Filter(AllNodes(), "architecture", a), x), 
+		# 	lambda y: Count(ShortestPath(x, y, []))
+		# ), "name"),
+		# "NearestStationArchitecture",
+		# group="MultiStep"),
+
+		re.compile("How many distinct routes are there between ([a-zA-Z]+) and ([a-zA-Z]+)\?"),
+		# lambda n1, n2: Count(Paths(n1, n2)),
+		# "DistinctRoutes",
+		# arguments_valid=lambda g, n1, n2: n1 != n2,
+		# group="MultiStep"),
 
 
-actions = {
-    "scene": "scene({T},{T1}).",
-    "unique": "unique({T},{T1}).",
-    "relate": "relate_{val}({T},{T1}).",
-    "count": "count({T},{T1}).",
-    "exist": "exist({T},{T1}).",
-    "filter_size": "filter_{val}({T},{T1}).",
-    "filter_color": "filter_{val}({T},{T1}).",
-    "filter_material": "filter_{val}({T},{T1}).",
-    "filter_shape": "filter_{val}({T},{T1}).",
-    "query_size": "query_size({T},{T1}).",
-    "query_color": "query_color({T},{T1}).",
-    "query_material": "query_material({T},{T1}).",
-    "query_shape": "query_shape({T},{T1}).",
-    "same_size": "same_size({T},{T1}).",
-    "same_color": "same_color({T},{T1}).",
-    "same_material": "same_material({T},{T1}).",
-    "same_shape": "same_shape({T},{T1}).",
-    "equal_integer": "equal_integer({T},{T1},{T2}).",
-    "less_than": "less_than({T},{T1},{T2}).",
-    "greater_than": "greater_than({T},{T1},{T2}).",
-    "equal_size": "equal_size({T},{T1},{T2}).",
-    "equal_color": "equal_color({T},{T1},{T2}).",
-    "equal_material": "equal_material({T},{T1},{T2}).",
-    "equal_shape": "equal_shape({T},{T1},{T2}).",
-    "union": "or({T},{T1},{T2}).",
-    "intersect": "and({T},{T1},{T2})."
-}
-
-func_type = {
-    "unary": ["scene", "unique", "count", "exist", "query_size", "query_color", "query_material",
-              "query_shape", "same_size", "same_color", "same_material", "same_shape"],
-    "binary_val": ["relate", "filter_size", "filter_color", "filter_material", "filter_shape"],
-    "binary_in": ["equal_integer", "less_than", "greater_than", "equal_size", "equal_color", "equal_shape",
-                  "equal_material", "union", "intersect"]
-}
+		re.compile("Is ([a-zA-Z]+) part of a cycle\?"),
+		# lambda n1: HasCycle(n1),
+		# "HasCycle",
+		# group="MultiStep"),
 
 
-def encode_question(program):
-    # Holds action sequence
-    action_atoms = []
-    # Time
-    t = 0
+		re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) adjacent\?"), 
+		# (lambda a,b: Adjacent(a,b)),
+		# "StationAdjacent"),
+		re.compile("Which station is adjacent to ([a-zA-Z]+) and ([a-zA-Z]+)\?"), 
+		# lambda a,b: UnpackUnitList(Pluck(Sample(Intersection(Neighbors(a), Neighbors(b)), 1), "name")),
+		# "StationPairAdjacent",
+		# arguments_valid=lambda g, a, b: a != b,
+		# answer_valid=lambda g, a, b, c: a != b and a != c),
+		re.compile("Which ([a-zA-Z]+) station is adjacent to ([a-zA-Z]+)\?"), 
+		# lambda a,b: UnpackUnitList(Pluck(Filter(Neighbors(b), "architecture", a), "name")),
+		# "StationArchitectureAdjacent"),
+		re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) connected by the same station\?"), 
+		# (lambda a,b: Equal(Count(ShortestPath(a, b, [])),3)),
+		# "StationOneApart"),
+		re.compile("Is there a station called ([a-zA-Z]+)\?"), 
+		# (lambda a: Const(True)),
+		# "StationExistence1"),
+		re.compile("Is there a station called ([a-zA-Z]+)\?"), 
+		# (lambda a: Const(False)),
+		# "StationExistence2"),
+		re.compile("Which lines is ([a-zA-Z]+) on\?"), 
+		# (lambda a: GetLines(a)),
+		# "StationLine"),
+		re.compile("How many lines is ([a-zA-Z]+) on\?"), 
+		# (lambda a: Count(GetLines(a))),
+		# "StationLineCount"),
+		re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) on the same line\?"), 
+		# (lambda a, b: HasIntersection(GetLines(a), GetLines(b)) ),
+		# "StationSameLine",
+		# arguments_valid=lambda g, a, b: a != b),
+		re.compile("Which stations does ([a-zA-Z]+) pass through\?"), 
+		# (lambda a: Pluck(Unique(Nodes(Filter(AllEdges(), "line_id", Pick(a, "id")))), "name")),
+		# "LineStations"),
+		re.compile("Which line has the most ([a-zA-Z]+) stations\?"),
+		# (lambda a: Mode(Pluck(Edges(Filter(AllNodes(), "architecture", a)), "line_name")) ),
+		# "LineMostArchitecture"),
 
-    # Iterate over functional program and translate every basic function into an action atom
-    for i, func in enumerate(program):
-        t = i
-        func_name = func["function"]
-        if func_name in func_type["unary"]:
-            if func_name == "scene":
-                action_atoms.append(actions[func_name].format(T=t, T1=0))
-            else:
-                action_atoms.append(actions[func_name].format(
-                    T=t, T1=func["inputs"][0] + 1))
-        elif func_name in func_type["binary_val"]:
-            val = func["value_inputs"][0]
-            action_atoms.append(actions[func_name].format(
-                T=t, T1=func["inputs"][0] + 1, val=val))
-        elif func_name in func_type["binary_in"]:
-            t1 = func["inputs"][0]
-            t2 = func["inputs"][1]
-            if func_name in ["union", "intersect"]:
-                action_atoms.append(actions[func_name].format(
-                    T=t, T1=t1 + 1, T2=t2 + 1))
-            else:
-                action_atoms.append(
-                    actions[func_name].format(T=t, T1=t1, T2=t2))
-        else:
-            print("Unknown function name: " + func_name)
 
-    # Add end atom
-    action_atoms.append(f"end({t}).")
+]
 
-    # Return action sequence as string
-    return "\n".join(action_atoms)
+question_form_asp = [
+    # Stations
+    'end(2).pickClean(1).station(0,{}).',
+    'end(2).pickClean(1).station(0,{}).',
+    
+    'end(2).pickSize(1).station(0,{}).',
+    'end(2).pickSize(1).station(0,{}).',
+    
+    'end(2).pickMusic(1).station(0,{}).',
+    'end(2).pickMusic(1).station(0,{}).',
+
+    'end(2).pickArch(1).station(0,{}).',
+    'end(2).pickArch(1).station(0,{}).',
+
+    'end(2).pickDA(1).station(0,{}).',
+    'end(2).pickDA(1).station(0,{}).',
+    
+    'end(2).pickRA(1).station(0,{}).',
+    'end(2).pickRA(1).station(0,{}).',
+    
+    # Lines
+    
+    'end(4).count(3).pluckArch(2).lineNodes(1).line(0,{}).',
+    'end(4).count(3).pluckMusic(2).lineNodes(1).line(0,{}).',
+    'end(4).count(3).pluckSize(2).lineNodes(1).line(0,{}).',
+    
+    'end(3).countIfEqual(2,{}).lineNodes(1).line(0,{}).',
+    'end(3).countIfEqual(2,{}).lineNodes(1).line(0,{}).',
+    
+    'end(3).countIfEqual(2,da).lineNodes(1).line(0,{}).',
+    'end(3).countIfEqual(2,ra).lineNodes(1).line(0,{}).',
+
+    # Interesting
+    'end(3).countNodesBetween(2).shortestPath(1).station(0,{}).station(0,{}).',
+    'end(3).countNodesBetween(2).shortestPathAvoid(1, {}).station(0,{}).station(0,{}).',
+    
+    'end(3).countNodesBetween(2).withinHops(1, 2).station(0,{})',
+
+    'end(3).countNodesBetween(2).closestArch(1, {}).station(0,{})',
+
+    'end(2).paths(1).station(0,{}).station(0,{}).',
+    
+    'end(2).cycle(1).station(0,{}).',
+    
+    'end(2).adjacent(1).station(0,{}).station(0,{}).',
+    'end(2).adjacentTo(1).station(0,{}).station(0,{}).',
+
+    'end(2).adjacentArch(1, {}).station(0,{}).',
+
+    'end(2).commonStation(1).station(0,{}).station(0,{}).',
+
+    'end(2).exist(1).station(0,{}).',
+
+    'end(2).exist(1).station(0,{}).',
+
+    'end(2).linesOn(1).station(0,{}).',
+
+    'end(3).count(2).linesOn(1).station(0,{}).',
+
+    'end(2).sameLine(1).station(0,{}).station(0,{}).',
+
+    'end(2).stations(1).line(0,{}).',
+
+    'end(2).mostArch(0,{}).',
+
+
+]

@@ -69,7 +69,7 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
 
     for line in incumbent_info['graph']['lines']:
         line_pred = line_pred_template.format(
-            built = line['built'].replace('s', ''),
+            built = int(line['built'].replace('s', '').replace('recent', '2010')),
             color = line['color'],
             has_aircon = str(line['has_aircon']).lower(),
             id='id'+line['id'].replace("-",""),
