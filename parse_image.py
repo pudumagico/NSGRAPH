@@ -1,5 +1,3 @@
-import sys
-
 import cv2 as cv
 from scipy.spatial import distance
 
@@ -14,10 +12,7 @@ def find_closest_name(node, name_dict):
     for name in name_dict:
         if selected_name is None:
             selected_name = name
-            # print(selected_name)
         else:
-            # print(name_dict[name])
-            # print(name, selected_name, distance.euclidean([node[0], node[1]], name_dict[name]), distance.euclidean([node[0], node[1]], name_dict[selected_name]))
             if distance.euclidean([node[0], node[1]], name_dict[name]) < distance.euclidean([node[0], node[1]], name_dict[selected_name]):
                 selected_name = name
     return selected_name

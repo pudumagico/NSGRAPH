@@ -9,7 +9,6 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 def fill_background_knowledge(file_path, graph_id, nodes, edges):
-    print(graph_id)
 
     node_pred_template = 'node({architecture},{cleanliness},{disabled_access},{has_rail},{music},{name},{size}).\n'
     edge_pred_template = 'edge({line_color},{line_id},{line_name},{station1},{station2}).\n'
@@ -65,7 +64,6 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
                     edge_preds.append(edge_pred)
 
     edge_preds = list(set(edge_preds))
-    print('edge_preds', edge_preds)
 
     for line in incumbent_info['graph']['lines']:
         line_pred = line_pred_template.format(

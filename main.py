@@ -1,19 +1,14 @@
-import argparse
 import os
 import sys
 
+import easyocr
 import clingo
 
-import easyocr
-
-from parse_background_knowledge import fill_background_knowledge
 from parse_image import parse_graph
 from parse_question import parse_questions
-# node_pred = f'node({architecture},{cleanliness},{disabled_access},{has_rail},{music},{name},{size})'
-# edge_pred = f'edge({line_color}, {line_name}, {station1_name}, {station2_name})'
+from parse_background_knowledge import fill_background_knowledge
 
-reader = easyocr.Reader(['en']) # this needs to run only once to load the model into memory
-
+reader = easyocr.Reader(['en']) 
 
 def main():
     data_filepath = sys.argv[1]
@@ -26,8 +21,7 @@ def main():
 
     png_files = [f for f in os.listdir(data_filepath) if f.endswith('.png')]
 
-    main_encoding_file = open('main_encoding.lp', "r")
-    main_encoding =  main_encoding_file.read()
+    theory = open('theory.lp', "r").read()
     for graph in png_files:
         
         f = open(f'graph_encodings/{graph}.lp', "w")
@@ -53,7 +47,7 @@ def main():
             print(i,answers[i])
 
             ctl.add("base", [], nodes+edges+lines+questions[i])
-            ctl.add("base", [], main_encoding)
+            ctl.add("base", [], theory)
             ctl.ground([("base", [])])
             # model = None
             with ctl.solve(yield_=True) as handle:
