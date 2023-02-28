@@ -12,7 +12,6 @@ hasRA(N,R)      :- node(A,C,D,R,M,N,S).
 hasMusic(N,M)   :- node(A,C,D,R,M,N,S).
 hasSize(N,S)    :- node(A,C,D,R,M,N,S).
 
-
 attribute(T+1, A)   :- pickArch(T), station(T-1, N), hasArch(N, A).
 attribute(T+1, C)   :- pickClean(T), station(T-1, N), hasClean(N, C).
 attribute(T+1, D)   :- pickDA(T), station(T-1, N), hasDA(N, D).
@@ -87,16 +86,18 @@ sp(T+1, (N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
 % bool(T+1,true) :- equal(T+1,T, V), cost(T+1,(NAME,NAME'),C), C=V-1.
 % bool(T+1,false) :- equal(T+1,T, V), not bool(T+1,true).
 
-0 { selected((NAME, NAME'),S1,S2); selected((NAME, NAME'),S2,S1) } 1 :- edge(COLOR,LINEID,LINENAME,S1,S2), sp(T, (NAME, NAME')).
-path((NAME, NAME'),A,B)             :- selected((NAME, NAME'),A,B).
-path((NAME, NAME'),X,Z)             :- path((NAME, NAME'),X,Y), path((NAME, NAME'),Y,Z).
-:- sp(T, (NAME, NAME')), not path((NAME, NAME'), NAME, NAME').
+0 { selected((N, N'),S1,S2); selected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), sp(T, (N, N')).
+path((N, N'),A,B)             :- selected((N, N'),A,B).
+path((N, N'),X,Z)             :- path((N, N'),X,Y), path((NAME, NAME'),Y,Z).
+:- sp(T, (N, N')), not path((N, N'), N, N').
 
 cost(T+2, (NAME, NAME'), C) :- count(T+1,T), C = #count { (NAME, NAME'),X,Y : selected((NAME, NAME'),X,Y) }, sp(T,(NAME, NAME')).
-sumcost(X) :- X = #sum{ V,(NAME,NAME'): cost(_,(NAME,NAME'),V), sp(_,(NAME,NAME')) }.
 % #minimize { C : cost(T, (NAME, NAME'), C) }.
+
+sumcost(X) :- X = #sum{ V,(NAME,NAME'): cost(_,(NAME,NAME'),V), sp(_,(NAME,NAME')) }.
 #minimize { X : sumcost(X) }.
 
+countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S1, S2)}.
 
 % % end(6).pluck_name(6,5).unique(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,cyansynians).
 % edge(T+1, COLOR,LINEID,LINENAME,STATION1,STATION2)  :-  filter_line_id(T+1,T), 
@@ -106,25 +107,16 @@ sumcost(X) :- X = #sum{ V,(NAME,NAME'): cost(_,(NAME,NAME'),V), sp(_,(NAME,NAME'
 
 
 
-
-
-
+#show countedNodes/2.
+#show path/3.
 % #show sumcost/1.
 % #show counted/2.
 % #show uniqued/2.
 % #show edge/6.
 
 ans(V) :- end(T), attribute(T,V).
+ans(V) :- end(T), countedNodes(T,V).
 
-ans(V) :- end(T), has_rail(T,V).
-ans(V) :- end(T), disaccess(T,V).
-ans(V) :- end(T), architecture(T,V).
-ans(V) :- end(T), music(T,V).
-ans(V) :- end(T), size(T,V).
-ans(V) :- end(T), cleanliness(T,V).
-ans(V) :- end(T), counted(T,V).
-ans(V) :- end(T), uniqued(T,V).
-ans(V) :- end(T), cost(T,(_,_),V).
 
 #show ans/1.
 

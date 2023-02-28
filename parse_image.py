@@ -28,16 +28,9 @@ def parse_graph(file_path, reader):
     source = cv.imread(file_path)
     mode = 1
 
-    # 1st step - preprocessing
     source, preprocessed, mode, is_rotated = preprocess(source, mode)
-
-    # 2nd step - segmentation
     vertices_list, visualised, preprocessed, edge_thickness = segment(source, preprocessed, mode)
-
-    # 3rd step - topology recognition
     vertices_list = recognize_topology(vertices_list, preprocessed, visualised, edge_thickness, mode)
-
-    # 4th step - postprocessing
     graph = postprocess(vertices_list, is_rotated)
     
     nodes = []

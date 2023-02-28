@@ -28,9 +28,6 @@ def main():
 
         nodes, edges = parse_graph(os.path.abspath(data_filepath) + '/' + graph, reader)
         nodes, edges, lines = fill_background_knowledge(os.path.abspath(data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
-        # print(nodes)
-        # print(edges)
-        # print(lines)
         f.write(nodes)
         f.write(edges)
         f.write(lines)
