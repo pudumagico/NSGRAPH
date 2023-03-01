@@ -18,9 +18,9 @@ from .args import *
 import logging
 logger = logging.getLogger(__name__)
 
-from .london_graph import LondonGraph
+# from .london_graph import LondonGraph
 
-lg = LondonGraph().read()
+# lg = LondonGraph().read()
 
 if __name__ == "__main__":
 
@@ -81,8 +81,8 @@ if __name__ == "__main__":
 					try:
 						graph = GraphGenerator(args)
 						graph.generate()
-						# g = graph.graph_spec
-						g = lg
+						g = graph.graph_spec
+						# g = lg
 						logger.debug("Generated graph")
 
 						if len(g.nodes) == 0 or len(g.edges) == 0:
