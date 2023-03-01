@@ -88,16 +88,16 @@ sp(T+1, (N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
 
 0 { selected((N, N'),S1,S2); selected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), sp(T, (N, N')).
 path((N, N'),A,B)             :- selected((N, N'),A,B).
-path((N, N'),X,Z)             :- path((N, N'),X,Y), path((NAME, NAME'),Y,Z).
+path((N, N'),X,Z)             :- path((N, N'),X,Y), path((N, N'),Y,Z).
 :- sp(T, (N, N')), not path((N, N'), N, N').
 
-cost(T+2, (NAME, NAME'), C) :- count(T+1,T), C = #count { (NAME, NAME'),X,Y : selected((NAME, NAME'),X,Y) }, sp(T,(NAME, NAME')).
-% #minimize { C : cost(T, (NAME, NAME'), C) }.
+cost((N, N'), C) :- C = #count { (N, N'),X,Y : selected((N, N'),X,Y) }, sp(T,(N, N')).
+#minimize { C : cost((NAME, NAME'), C) }.
 
-sumcost(X) :- X = #sum{ V,(NAME,NAME'): cost(_,(NAME,NAME'),V), sp(_,(NAME,NAME')) }.
-#minimize { X : sumcost(X) }.
+% sumcost(X) :- X = #sum{ V,(N,N'): cost(_,(N,N'),V), sp(_,(N,N')) }.
+% #minimize { X : sumcost(X) }.
 
-countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S1, S2)}.
+countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S1, S2)}, sp(T,(N, N')).
 
 % % end(6).pluck_name(6,5).unique(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,cyansynians).
 % edge(T+1, COLOR,LINEID,LINENAME,STATION1,STATION2)  :-  filter_line_id(T+1,T), 
@@ -109,6 +109,7 @@ countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S
 
 #show countedNodes/2.
 #show path/3.
+#show cost/2.
 % #show sumcost/1.
 % #show counted/2.
 % #show uniqued/2.

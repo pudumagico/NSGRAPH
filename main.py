@@ -37,7 +37,7 @@ def main():
         accuracy = 0
         total = len(questions)
         for i in range(len(questions)):
-            ctl = clingo.Control(message_limit=0)
+            ctl = clingo.Control(["--warn=none"])
 
             print(i,questions_nl[i])
             print(i,questions[i])
