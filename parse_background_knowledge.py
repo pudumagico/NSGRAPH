@@ -5,14 +5,15 @@ import yaml
 
 from difflib import SequenceMatcher
 
+node_pred_template = 'node({architecture},{cleanliness},{disabled_access},{has_rail},{music},{name},{size}).\n'
+edge_pred_template = 'edge({line_color},{line_id},{line_name},{station1},{station2}).\n'
+line_pred_template = 'line({built},{color},{has_aircon},{id},{name}).\n'
+
+
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 def fill_background_knowledge(file_path, graph_id, nodes, edges):
-
-    node_pred_template = 'node({architecture},{cleanliness},{disabled_access},{has_rail},{music},{name},{size}).\n'
-    edge_pred_template = 'edge({line_color},{line_id},{line_name},{station1},{station2}).\n'
-    line_pred_template = 'line({built},{color},{has_aircon},{id},{name}).\n'
 
     node_preds = []
     edge_preds = []
@@ -62,6 +63,58 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
                     )
 
                     edge_preds.append(edge_pred)
+
+    edge_preds = list(set(edge_preds))
+
+    for line in incumbent_info['graph']['lines']:
+        line_pred = line_pred_template.format(
+            built = int(line['built'].replace('s', '').replace('recent', '2010')),
+            color = line['color'],
+            has_aircon = str(line['has_aircon']).lower(),
+            id='id'+line['id'].replace("-",""),
+            name = line['name'].replace(" edges", "").lower()
+        )
+        line_preds.append(line_pred)
+
+    return ''.join(node_preds), ''.join(edge_preds), ''.join(line_preds)
+    
+
+def gt_data(file_path, graph_id, nodes, edges):
+
+    node_preds = []
+    edge_preds = []
+    line_preds = []
+
+    stream = open(file_path, "r")
+    all_info = yaml.load_all(stream, yaml.FullLoader)
+    incumbent_info = None
+    for info in all_info:
+        if info['graph']['id'] == str(graph_id):
+            incumbent_info = info
+            break
+
+    for bkg_info_node in incumbent_info['graph']['nodes']:
+        
+        node_pred = node_pred_template.format(
+            architecture=bkg_info_node['architecture'].replace("-", ""),
+            cleanliness=bkg_info_node['cleanliness'].replace("-", ""),
+            disabled_access=str(bkg_info_node['disabled_access']).lower(),
+            has_rail=str(bkg_info_node['has_rail']).lower(),
+            music=bkg_info_node['music'].replace(" ", ""),
+            name=bkg_info_node['name'].lower(),
+            size=bkg_info_node['size'].replace("-", "")
+        )
+        node_preds.append(node_pred)
+    
+    for bkg_info_edge in incumbent_info['graph']['edges']:
+        edge_pred = edge_pred_template.format(
+            line_color=bkg_info_edge['line_color'],
+            line_id='id'+bkg_info_edge['line_id'].replace("-",""),
+            line_name=bkg_info_edge['line_name'].replace(" ", "").lower(),
+            station1=bkg_info_edge['station1_name'].lower(),
+            station2=bkg_info_edge['station2_name'].lower(),
+        )
+        edge_preds.append(edge_pred)
 
     edge_preds = list(set(edge_preds))
 

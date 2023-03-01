@@ -53,8 +53,6 @@ attribute(T+1,ID)   :- pickID(T), line(T-1, BUILT,COLOR,AIRCON,ID,NAME).
 % uniqued(T+1, NODENAME)                  :- unique(T+1,T), node(T, ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NODENAME,SIZE).
 
 % counted(T+1, C) :- count(T+1,T), C = #count{VAL: uniqued(T, VAL)}.
-% counted(T+1, C) :- count(T+1,T), C = #count{1,(NAME,NAME'): cost(T+2, (NAME, NAME'), V), sp(T,(NAME,NAME')), V <= X}, withinHops(T,T-1, X).
-% % counted(T+1, C) :- count(T+1,T), C = #count{1,(NAME,NAME'): cost(T+2, (NAME, NAME'), V), sp(T,(NAME,NAME')), V <= X}, withinHops(T,T-1, X).
 
 % counted(T+1, C) :- countIfEqual(T+1, T, RAIL), rails(RAIL), C = #count{NAME,RAIL: rail(T, NAME, RAIL)}.
 % counted(T+1, C) :- countIfEqual(T+1, T, SIZE), sizes(SIZE), C = #count{NAME,SIZE: size(T, NAME, SIZE)}.
@@ -62,16 +60,14 @@ attribute(T+1,ID)   :- pickID(T), line(T-1, BUILT,COLOR,AIRCON,ID,NAME).
 % counted(T+1, C) :- countIfEqual(T+1, T, CLEANLINESS), cleans(CLEANLINESS), C = #count{NAME,CLEANLINESS: cleanliness(T, NAME, CLEANLINESS)}.
 % counted(T+1, C) :- countIfEqual(T+1, T, DISACCESS), dissas(DISACCESS), C = #count{NAME,DISACCESS: disaccess(T, NAME, DISACCESS)}.
 
-
-sp(T+1, (N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
+sp((N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
 
 % sp(T+1, (NAME, NAME'))    :-  shortestPathOnlyUsingcleanliness(T+1,T,C), 
 %                             station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE), 
 %                             station(T,ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'), NAME<NAME'.
 
-% sp(T+1, (NAME, NAME'))    :-    withinHops(T+1,T, X),    station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE),
-%                                 node(ARCHITECTURE',CLEANLINESS',DISACCESS',RAIL',MUSIC',NAME',SIZE'),
-%                                 NAME!=NAME'.
+sp((N, N'))    :- withinHops(T, X), station(T-1,N), node(A,C,D,R,M,N',S), N!=N'.
+% counted(T+1, C)     :- withinHops(T, X), C = #count{1,(NAME,NAME'): cost(T+2, (NAME, NAME'), V), sp(T,(NAME,NAME')), V <= X}.
 
 % %to be implemented
 % p(T+1, (NAME, NAME'))      :-   paths(T+1,T), station(T,ARCHITECTURE,CLEANLINESS,DISACCESS,RAIL,MUSIC,NAME,SIZE), 
@@ -86,18 +82,18 @@ sp(T+1, (N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
 % bool(T+1,true) :- equal(T+1,T, V), cost(T+1,(NAME,NAME'),C), C=V-1.
 % bool(T+1,false) :- equal(T+1,T, V), not bool(T+1,true).
 
-0 { selected((N, N'),S1,S2); selected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), sp(T, (N, N')).
+0 { selected((N, N'),S1,S2); selected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), sp((N, N')).
 path((N, N'),A,B)             :- selected((N, N'),A,B).
 path((N, N'),X,Z)             :- path((N, N'),X,Y), path((N, N'),Y,Z).
-:- sp(T, (N, N')), not path((N, N'), N, N').
+:- sp((N, N')), not path((N, N'), N, N').
 
-cost((N, N'), C) :- C = #count { (N, N'),X,Y : selected((N, N'),X,Y) }, sp(T,(N, N')).
-#minimize { C : cost((NAME, NAME'), C) }.
+% cost((N, N'), C) :- C = #count { (N, N'),X,Y : selected((N, N'),X,Y)}, sp((N, N')).
+% #minimize { C : cost((N, N'), C) }.
 
-% sumcost(X) :- X = #sum{ V,(N,N'): cost(_,(N,N'),V), sp(_,(N,N')) }.
-% #minimize { X : sumcost(X) }.
+% sumcost(C) :- C = #sum{ V,(N,N'): cost((N,N'),V)}, sp((N,N')).
+% #minimize { C : sumcost(C) }.
 
-countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S1, S2)}, sp(T,(N, N')).
+% countedNodes(T+1, C):- countNodesBetween(T), sp((N, N')), cost((N,N'), C).
 
 % % end(6).pluck_name(6,5).unique(5,4).nodes(4,3).filter_line_id(3,2).allEdges(2,1).pick_id(2,1).line(1,0,cyansynians).
 % edge(T+1, COLOR,LINEID,LINENAME,STATION1,STATION2)  :-  filter_line_id(T+1,T), 
@@ -105,11 +101,11 @@ countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S
 %                                                         id(T,LINEID).  
 % uniqued(T+1,N)                        :-    pluck_name(T+1,T), uniqued(T,N).
 
+#show sp/1.
 
-
-#show countedNodes/2.
-#show path/3.
-#show cost/2.
+% #show countedNodes/2.
+% #show path/3.
+% #show cost/2.
 % #show sumcost/1.
 % #show counted/2.
 % #show uniqued/2.
@@ -117,6 +113,7 @@ countedNodes(T+1, C):- countNodesBetween(T), C = #count{1,S1,S2 : path((N,N'), S
 
 ans(V) :- end(T), attribute(T,V).
 ans(V) :- end(T), countedNodes(T,V).
+ans(V) :- end(T), counted(T,V).
 
 
 #show ans/1.

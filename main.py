@@ -6,9 +6,12 @@ import clingo
 
 from parse_image import parse_graph
 from parse_question import parse_questions
-from parse_background_knowledge import fill_background_knowledge
+from parse_background_knowledge import fill_background_knowledge, gt_data
 
-reader = easyocr.Reader(['en']) 
+reader = easyocr.Reader(['en'])
+
+USE_GT = True
+
 
 def main():
     data_filepath = sys.argv[1]
@@ -23,34 +26,43 @@ def main():
 
     theory = open('theory.lp', "r").read()
     for graph in png_files:
-        
+
         f = open(f'graph_encodings/{graph}.lp', "w")
 
-        nodes, edges = parse_graph(os.path.abspath(data_filepath) + '/' + graph, reader)
-        nodes, edges, lines = fill_background_knowledge(os.path.abspath(data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+        nodes, edges = parse_graph(os.path.abspath(
+            data_filepath) + '/' + graph, reader)
+        if USE_GT:
+
+            nodes, edges, lines = gt_data(os.path.abspath(
+                data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+        else:
+            nodes, edges, lines = fill_background_knowledge(os.path.abspath(
+                data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+
         f.write(nodes)
         f.write(edges)
         f.write(lines)
 
-        questions, questions_nl, answers = parse_questions(os.path.abspath(data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+        questions, questions_nl, answers = parse_questions(os.path.abspath(
+            data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
         accuracy = 0
         total = len(questions)
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none"])
 
-            print(i,questions_nl[i])
-            print(i,questions[i])
-            print(i,answers[i])
+            print(i, questions_nl[i])
+            print(i, questions[i])
+            print(i, answers[i])
 
             ctl.add("base", [], nodes+edges+lines+questions[i])
             ctl.add("base", [], theory)
             ctl.ground([("base", [])])
             # model = None
             with ctl.solve(yield_=True) as handle:
-                for m in handle: 
+                for m in handle:
                     print(m)
-            
+
             # for atom in m.symbols(shown=True):
             #     print(atom)
                 # if str(atom).split('(')[1].strip(')') == str(answers[i]).lower():
@@ -59,6 +71,7 @@ def main():
                 #     print(atom)
                 #     exit()
         f.close()
+
 
 if __name__ == "__main__":
     main()

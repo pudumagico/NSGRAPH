@@ -7,6 +7,7 @@ from optical_graph_recognition.segmentation import segment
 from optical_graph_recognition.topology_recognition import recognize_topology
 from optical_graph_recognition.postprocessing import postprocess
 
+
 def find_closest_name(node, name_dict):
     selected_name = None
     for name in name_dict:
@@ -16,6 +17,7 @@ def find_closest_name(node, name_dict):
             if distance.euclidean([node[0], node[1]], name_dict[name]) < distance.euclidean([node[0], node[1]], name_dict[selected_name]):
                 selected_name = name
     return selected_name
+
 
 def parse_graph(file_path, reader):
 
@@ -29,10 +31,12 @@ def parse_graph(file_path, reader):
     mode = 1
 
     source, preprocessed, mode, is_rotated = preprocess(source, mode)
-    vertices_list, visualised, preprocessed, edge_thickness = segment(source, preprocessed, mode)
-    vertices_list = recognize_topology(vertices_list, preprocessed, visualised, edge_thickness, mode)
+    vertices_list, visualised, preprocessed, edge_thickness = segment(
+        source, preprocessed, mode)
+    vertices_list = recognize_topology(
+        vertices_list, preprocessed, visualised, edge_thickness, mode)
     graph = postprocess(vertices_list, is_rotated)
-    
+
     nodes = []
     edges = []
     for element in graph:
@@ -44,4 +48,3 @@ def parse_graph(file_path, reader):
         name = find_closest_name(node, name_dict)
         node.append(name)
     return nodes, edges
-
