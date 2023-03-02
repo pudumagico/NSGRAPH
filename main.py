@@ -26,7 +26,7 @@ def main():
     theory = open('theory.lp', "r").read()
     for graph in png_files:
 
-        f = open(f'graph_encodings/{graph}.lp', "w")
+        f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
 
         nodes, edges = parse_graph(os.path.abspath(
             data_filepath) + '/' + graph, reader)
