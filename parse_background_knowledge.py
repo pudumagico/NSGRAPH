@@ -72,7 +72,7 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
             color = line['color'],
             has_aircon = str(line['has_aircon']).lower(),
             id='id'+line['id'].replace("-",""),
-            name = line['name'].replace(" edges", "").lower()
+            name = line['name'].replace(" ", "").lower()
         )
         line_preds.append(line_pred)
 

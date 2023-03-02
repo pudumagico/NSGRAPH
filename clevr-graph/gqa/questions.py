@@ -256,14 +256,14 @@ question_forms = [
 		group="MultiStep"),
 
 
-	QuestionForm(
-		[Station, Station, Cleanliness], 
-		"How many stations are on the shortest path between {} and {} avoiding {} stations?", 
-		(lambda n1, n2 ,c: CountNodesBetween(ShortestPathOnlyUsing(n1, n2, Without(AllNodes(), "cleanliness", c), []))),
-		"StationShortestAvoidingCount",
-		arguments_valid=lambda g, n1, n2, c: n1 != n2,
-		answer_valid=lambda g, a, n1, n2, c: a >= 0,
-		group="MultiStep"),
+	# QuestionForm(
+	# 	[Station, Station, Cleanliness], 
+	# 	"How many stations are on the shortest path between {} and {} avoiding {} stations?", 
+	# 	(lambda n1, n2 ,c: CountNodesBetween(ShortestPathOnlyUsing(n1, n2, Without(AllNodes(), "cleanliness", c), []))),
+	# 	"StationShortestAvoidingCount",
+	# 	arguments_valid=lambda g, n1, n2, c: n1 != n2,
+	# 	answer_valid=lambda g, a, n1, n2, c: a >= 0,
+	# 	group="MultiStep"),
 
 
 	# 'two hops away'

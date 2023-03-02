@@ -35,7 +35,7 @@ if __name__ == "__main__":
 	else:
 		name = uuid.uuid4()
 
-	total_gqa = args.count * 10
+	total_gqa = args.count
 	if args.just_one:
 		total_gqa = 1
 
@@ -131,14 +131,14 @@ if __name__ == "__main__":
 
 		yaml.dump_all(specs(), file, explicit_start=True)
 
-		logger.info(f"GQA per question type: {f_success}")
+		# logger.info(f"GQA per question type: {f_success}")
 
-		for i in f_try:
-			if i in f_success: 
-				if f_success[i] < f_try[i]:
-					logger.warn(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
-			else:
-				logger.warn(f"Question form {i} totally failed to generate")
+		# for i in f_try:
+		# 	if i in f_success: 
+		# 		if f_success[i] < f_try[i]:
+		# 			logger.warn(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
+		# 	else:
+		# 		logger.warn(f"Question form {i} totally failed to generate")
 
 				
 

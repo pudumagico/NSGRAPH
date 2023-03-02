@@ -3,7 +3,7 @@ import re
 
 
 def parse_questions(yaml_filepath, graph_id):
-
+    assert len(question_forms) == len(question_form_asp)
     with open(yaml_filepath, "r") as file:
         docs = yaml.load_all(file, yaml.FullLoader)
         i = 0
@@ -13,12 +13,13 @@ def parse_questions(yaml_filepath, graph_id):
         for data in docs:
             if data['graph']['id'] == graph_id:
                 question_nl = data['question']['english']
-                answers.append(data['answer'])
                 for i, regex in enumerate(question_forms):
                     match = regex.match(question_nl)
                     if match:
                         args = list(map(str.lower, list(match.groups())))
-                        args.reverse()
+                        # args.reverse()
+                        args = [x.replace(' ', '') for x in args]
+                        answers.append(data['answer'])
                         asp_question = question_form_asp[i].format(*args)
                         questions.append(asp_question)
                         questions_nl.append(question_nl)
@@ -41,17 +42,17 @@ question_forms = [
     re.compile("Does ([a-zA-Z]+) have rail connections\?"),
     re.compile("Can you get rail connections at ([a-zA-Z]+)\?"),
     re.compile(
-        "How many architectural styles does ([a-zA-Z]+) pass through\?"),
-    re.compile("How many music styles does ([a-zA-Z]+) pass through\?"),
-    re.compile("How many sizes of station does ([a-zA-Z]+) pass through\?"),
+        "How many architectural styles does ([ a-zA-Z]+) pass through\?"),
+    re.compile("How many music styles does ([ a-zA-Z]+) pass through\?"),
+    re.compile("How many sizes of station does ([ a-zA-Z]+) pass through\?"),
     re.compile(
-        "How many stations playing ([a-zA-Z]+) does ([a-zA-Z]+) pass through\?"),
+        "How many stations playing ([a-zA-Z]+) does ([ a-zA-Z]+) pass through\?"),
     re.compile(
-        "How many ([a-zA-Z]+) stations does ([a-zA-Z]+) pass through\?"),
+        "How many ([a-zA-Z]+) stations does ([ a-zA-Z]+) pass through\?"),
     re.compile(
-        "How many stations with disabled access does ([a-zA-Z]+) pass through\?"),
+        "How many stations with disabled access does ([ a-zA-Z]+) pass through\?"),
     re.compile(
-        "How many stations with rail connections does ([a-zA-Z]+) pass through\?"),
+        "How many stations with rail connections does ([ a-zA-Z]+) pass through\?"),
     re.compile("How many stations are between ([a-zA-Z]+) and ([a-zA-Z]+)\?"),
     re.compile(
         "How many stations are on the shortest path between ([a-zA-Z]+) and ([a-zA-Z]+) avoiding ([a-zA-Z]+) stations\?"),

@@ -12,7 +12,6 @@ reader = easyocr.Reader(['en'])
 
 USE_GT = True
 
-
 def main():
     data_filepath = sys.argv[1]
 
@@ -46,32 +45,34 @@ def main():
         questions, questions_nl, answers = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
-        accuracy = 0
         total = len(questions)
+        correct = 0
         for i in range(len(questions)):
-            ctl = clingo.Control(["--warn=none"])
+            ctl = clingo.Control(["--warn=none", "-n 0"])
 
-            print(i, questions_nl[i])
-            print(i, questions[i])
-            print(i, answers[i])
+            # print(i, questions_nl[i])
+            # print(i, questions[i])
+            # print(i, answers[i])
 
             ctl.add("base", [], nodes+edges+lines+questions[i])
             ctl.add("base", [], theory)
             ctl.ground([("base", [])])
-            # model = None
+            models = []
             with ctl.solve(yield_=True) as handle:
                 for m in handle:
-                    print(m)
+                    models.append(m)
 
-            # for atom in m.symbols(shown=True):
-            #     print(atom)
-                # if str(atom).split('(')[1].strip(')') == str(answers[i]).lower():
-                #     print('OK')
-                # else:
-                #     print(atom)
-                #     exit()
+            ans_found = False
+
+            for model in models:
+                if not ans_found:
+                    for atom in model.symbols(shown=True):
+                        if str(atom.arguments[0]) == str(answers[i]).lower():
+                            correct += 1
+                            ans_found = True
+                            break    
         f.close()
-
+    print('Accuracy:', correct/total * 100)
 
 if __name__ == "__main__":
     main()
