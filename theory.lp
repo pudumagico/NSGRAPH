@@ -30,8 +30,6 @@ counted(T+2, C) :- count(T+1), pluckArch(T), C = #count{A: station(T,S), hasArch
 counted(T+2, C) :- count(T+1), pluckMusic(T), C = #count{M: station(T,S), hasMusic(S,M)}.
 counted(T+2, C) :- count(T+1), pluckSize(T), C = #count{S': station(T,S), hasSize(S,S')}.
 
-% 15 end(3).countIfEqual(2,shabby).lineNodes(1).line(0,cyanszirry).
-
 counted(T+1, C) :- countIfEqual(T,X), cleans(X), C = #count{S: station(T,S), hasClean(S,X)}.
 counted(T+1, C) :- countIfEqual(T,X), sizes(X), C = #count{S: station(T,S), hasSize(S,X)}.
 
@@ -45,7 +43,6 @@ countedNodes(T+1, C-1)        :- countNodesBetween(T), sp((N, N')), cost((N,N'),
 countedWithinHops(T+1, C)     :-    withinHops(T, X), 
                                     C = #count{1,(N,N'): cost((N, N'), V), sp((N,N')), V <= X}.
 
-%21 end(2).paths(1).station(0,dynaiarry).station(0,pruomp).
 p((N,N')) :- paths(T), station(T-1,N), station(T-1,N'), N<N'.
 
 sp((N,N)):- cycle(T), station(T-1,N).
