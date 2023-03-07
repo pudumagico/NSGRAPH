@@ -15,6 +15,9 @@ hasSize(N,S)    :- node(A,C,D,R,M,N,S).
 hasNodes(N,S1) :- line(Y,C,AC,ID,N), edge(C,ID,N,S1,S2).
 hasNodes(N,S2) :- line(Y,C,AC,ID,N), edge(C,ID,N,S1,S2).
 
+e(S1,S2) :- edge(C,ID,N,S1,S2).
+e(S2,S1) :- e(S1,S2).
+
 attribute(T+1, A)   :- pickArch(T), station(T-1, N), hasArch(N, A).
 attribute(T+1, C)   :- pickClean(T), station(T-1, N), hasClean(N, C).
 attribute(T+1, D)   :- pickDA(T), station(T-1, N), hasDA(N, D).
@@ -32,16 +35,19 @@ counted(T+2, C) :- count(T+1), pluckSize(T), C = #count{S': station(T,S), hasSiz
 
 counted(T+1, C) :- countIfEqual(T,X), cleans(X), C = #count{S: station(T,S), hasClean(S,X)}.
 counted(T+1, C) :- countIfEqual(T,X), sizes(X), C = #count{S: station(T,S), hasSize(S,X)}.
+counted(T+1, C) :- countIfEqual(T,X), musics(X), C = #count{S: station(T,S), hasMusic(S,X)}.
 
 counted(T+1, C) :- countIfEqual(T,da), C = #count{S: station(T,S), hasDA(S,true)}.
 counted(T+1, C) :- countIfEqual(T,ra), C = #count{S: station(T,S), hasRA(S,true)}.
 
 sp((N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
+sp((N, N'))  :- shortestPathAvoid(T,X), station(T-1,N), station(T-1,N'), N<N'.
 sp((N, N'))  :- withinHops(T, X), station(T-1,N), node(A,C,D,R,M,N',S), N!=N'.
- 
-countedNodes(T+1, C-1)        :- countNodesBetween(T), sp((N, N')), cost((N,N'), C).
 countedWithinHops(T+1, C)     :-    withinHops(T, X), 
                                     C = #count{1,(N,N'): cost((N, N'), V), sp((N,N')), V <= X}.
+
+countedNodes(T+1, C-1)        :- countNodesBetween(T), sp((N, N')), cost((N,N'), C).
+countedNodes(T+1, C-1)        :- countNodesBetween(T), spa((N, N'), _), cost((N,N'), C).
 
 p((N,N')) :- paths(T), station(T-1,N), station(T-1,N'), N<N'.
 
@@ -52,25 +58,53 @@ sp((N,N')):- adjacent(T), station(T-1,N), station(T-1,N'), N<N'.
 adjacentAns(T+1, true) :- adjacent(T), cost(_,C), C=1.
 adjacentAns(T+1, false) :- adjacent(T), not adjacentAns(T+1, true).
 
-sp((N,N')):- adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
-adjacentToAns(T+1, X) :- path((N,N'),N,X), path((N,N'),X,N'), adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
+p((N,N')):- adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
+adjacentToAns(T+1, X) :- in(N,X), in(X,N'), adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
 
-0 { pselected((N, N'),S1,S2); pselected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), p((N, N')).
-path((N, N'),A,B)             :- pselected((N, N'),A,B).
-path((N, N'),X,Z)             :- path((N, N'),X,Y), path((N, N'),Y,Z).
-:- p((N, N')), not path((N, N'), N, N').
-:- p((N, N')), path((N, N'), X, Z), path((N, N'), Y, Z), X!=Y.
+start(S1) :- p((S1,S2)).
+finish(S2) :- p((S1,S2)).
+{ in(X,Y) : e(X,Y) }.
+:- in(X,Y), in(Z,Y), X != Z.
+:- in(X,Y), in(X,Z), Y != Z.
+:- start(Y), in(_,Y).
+:- finish(X), in(X,_).
+reach(X) :- start(X), in(X,_).
+reach(Y) :- in(X,Y), reach(X).
+:- finish(X), not reach(X).
+:- in(X,Y), not reach(X).
+:- in(X,Y), not reach(Y).
 
 0 { selected((N, N'),S1,S2); selected((N, N'),S2,S1) } 1 :- edge(C,LID,LNAME,S1,S2), sp((N, N')).
 path((N, N'),A,B)             :- selected((N, N'),A,B).
 path((N, N'),X,Z)             :- path((N, N'),X,Y), path((N, N'),Y,Z).
 :- sp((N, N')), not path((N, N'), N, N').
 
-cost((N, N'), C) :- C = #count { (N, N'),X,Y : selected((N, N'),X,Y)}, sp((N, N')).
-% #minimize { C : cost((N, N'), C) }.
+:-  shortestPathAvoid(T,X), cleans(X), 
+    selected((N, N'),S1,S2),
+    hasClean(S1,Y), hasClean(S1,Z), X!=Y, X!=Z.
 
-sumcost(S) :- S = #sum{ V,(N,N'): cost((N,N'),V)}, sp((N,N')).
-#minimize { S : sumcost(S) }.
+cost((N, N'), C) :- C = #count { X,Y : selected((N, N'),X,Y) }, sp((N, N')).
+#minimize { C,N,N' : cost((N, N'), C) }.
+
+sameLineAns(T+1,true)   :-  sameLine(T), station(T-1,N), station(T-1,N'), 
+                            hasNodes(L,N), hasNodes(L,N'), N<N'.
+sameLineAns(T+1,false)  :-  sameLine(T), not sameLineAns(T+1,true).
+
+sp((N,N'))  :- commonStation(T), station(T-1,N), station(T-1,N'), N<N'.
+commonStationAns(T+1, true)     :- commonStation(T), cost((N,N'), C), C = 2.
+commonStationAns(T+1, false)    :- commonStation(T), not commonStationAns(T+1, true).
+
+sp((N,N')) :- closestArch(T, A), station(T-1,N), hasArch(N',A), N!=N'.
+closestArchAns(T+1,S) :- closestArch(T,A), X = #min{C : cost((N,N'), C)}, cost((_,S),X).
+
+lineOnAns(T+1,LN)   :- linesOnNames(T), station(T-1,N), hasNodes(LN,N).
+lineOnAns(T+1,C)    :- linesOnCount(T), station(T-1,N), C=#count{LNAME : hasNodes(LNAME,N)}.
+
+existAns(T+1,true) :- exist(T), station(T-1,N), node(A,C,D,R,M,N,S).
+existAns(T+1,false) :- exist(T), not existAns(T+1,true).
+
+archCount(N,V)          :- mostArch(T,A), V=#count{1,N,S : hasNodes(N,S), hasArch(S,A)}, line(Y,C,AC,ID,N).
+archCountAns(T+1,N')     :- mostArch(T,A), Z=#min{V : archCount(N,V)}, archCount(N',V), V=Z.
 
 ans(V) :- end(T), attribute(T,V).
 ans(V) :- end(T), counted(T,V).
@@ -79,7 +113,11 @@ ans(V) :- end(T), countedWithinHops(T,V).
 ans(V) :- end(T), cycleAns(T,V).
 ans(V) :- end(T), adjacentAns(T,V).
 ans(V) :- end(T), adjacentToAns(T,V).
+ans(V) :- end(T), sameLineAns(T,V).
+ans(V) :- end(T), commonStationAns(T,V).
+ans(V) :- end(T), closestArchAns(T,V).
+ans(V) :- end(T), lineOnAns(T,V).
+ans(V) :- end(T), existAns(T,V).
+ans(V) :- end(T), archCountAns(T,V).
 
-% #show p/1.
-% #show path/3.
 #show ans/1.

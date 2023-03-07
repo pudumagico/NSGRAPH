@@ -41,6 +41,7 @@ def main():
         f.write(nodes)
         f.write(edges)
         f.write(lines)
+        f.close()
 
         questions, questions_nl, answers = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
@@ -48,11 +49,7 @@ def main():
         total = len(questions)
         correct = 0
         for i in range(len(questions)):
-            ctl = clingo.Control(["--warn=none", "-n 0"])
-
-            # print(i, questions_nl[i])
-            # print(i, questions[i])
-            # print(i, answers[i])
+            ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
 
             ctl.add("base", [], nodes+edges+lines+questions[i])
             ctl.add("base", [], theory)
@@ -60,18 +57,55 @@ def main():
             models = []
             with ctl.solve(yield_=True) as handle:
                 for m in handle:
+                    # print(m)
                     models.append(m)
 
             ans_found = False
 
+                
+
             for model in models:
                 if not ans_found:
+                        # print(model.symbols(shown=True))
                     for atom in model.symbols(shown=True):
-                        if str(atom.arguments[0]) == str(answers[i]).lower():
-                            correct += 1
-                            ans_found = True
-                            break    
-        f.close()
+                        model_ans = []
+                        if atom.name == 'ans':
+                            model_ans.append(str(atom.arguments[0]))                            
+                            if str(atom.arguments[0]) == str(answers[i]).replace(' ', '').replace('-','').lower():
+                                correct += 1
+                                ans_found = True
+                                print('correct')
+                                break    
+                    if str(model_ans) == str(answers[i]).replace(' ', '').lower() and not ans_found:
+                        correct += 1
+                        ans_found = True
+                        print('correct')
+                        break    
+            
+            len_models = len(models)
+            if str(len_models) == str(answers[i]).lower() and not ans_found:
+                correct+=1
+                ans_found = True
+                print('correct')
+                continue
+            
+            if 'cycle' in questions_nl[i] and not models and str(answers[i]).replace(' ', '').lower() == 'false':
+                correct+=1
+                ans_found = True
+                print('correct')
+                continue
+            
+            if not ans_found:
+                print(i, questions_nl[i])
+                print(i, questions[i])
+                print(i, str(answers[i]))
+                for m in models:
+                    print(m.symbols(shown=True))
+                # exit()
+
+                    
+
+
     print('Accuracy:', correct/total * 100)
 
 if __name__ == "__main__":
