@@ -10,7 +10,7 @@ from parse_background_knowledge import fill_background_knowledge, gt_data
 
 reader = easyocr.Reader(['en'])
 
-USE_GT = True
+USE_GT = False
 
 def main():
     data_filepath = sys.argv[1]
@@ -24,12 +24,15 @@ def main():
     png_files = [f for f in os.listdir(data_filepath) if f.endswith('.png')]
 
     theory = open('theory.lp', "r").read()
+    total = 0
+    correct = 0
     for graph in png_files:
 
         f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
 
         nodes, edges = parse_graph(os.path.abspath(
             data_filepath) + '/' + graph, reader)
+
         if USE_GT:
 
             nodes, edges, lines = gt_data(os.path.abspath(
@@ -46,8 +49,6 @@ def main():
         questions, questions_nl, answers = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
-        total = len(questions)
-        correct = 0
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
 
@@ -61,40 +62,38 @@ def main():
                     models.append(m)
 
             ans_found = False
-
-                
-
+            model_ans = []
             for model in models:
                 if not ans_found:
-                        # print(model.symbols(shown=True))
+                    # print(model.symbols(shown=True))
                     for atom in model.symbols(shown=True):
                         model_ans = []
                         if atom.name == 'ans':
-                            model_ans.append(str(atom.arguments[0]))                            
-                            if str(atom.arguments[0]) == str(answers[i]).replace(' ', '').replace('-','').lower():
-                                correct += 1
+                            model_ans.append(str(atom.arguments[0]))
+                            if str(atom.arguments[0]) == str(answers[i]).replace(' ', '').replace('-', '').lower():
+                                # correct += 1
                                 ans_found = True
                                 print('correct')
-                                break    
+                                break
                     if str(model_ans) == str(answers[i]).replace(' ', '').lower() and not ans_found:
-                        correct += 1
+                        # correct += 1
                         ans_found = True
                         print('correct')
-                        break    
-            
+                        break
+
             len_models = len(models)
             if str(len_models) == str(answers[i]).lower() and not ans_found:
-                correct+=1
+                # correct += 1
                 ans_found = True
                 print('correct')
                 continue
-            
-            if 'cycle' in questions_nl[i] and not models and str(answers[i]).replace(' ', '').lower() == 'false':
-                correct+=1
+
+            if not ans_found and 'cycle' in questions_nl[i] and not models and str(answers[i]).replace(' ', '').lower() == 'false':
+                # correct += 1
                 ans_found = True
                 print('correct')
                 continue
-            
+
             if not ans_found:
                 print(i, questions_nl[i])
                 print(i, questions[i])
@@ -102,11 +101,11 @@ def main():
                 for m in models:
                     print(m.symbols(shown=True))
                 # exit()
+                correct=+1
 
-                    
+            total+=1
+        print('Accuracy:', (total-correct)/total * 100)
 
-
-    print('Accuracy:', correct/total * 100)
 
 if __name__ == "__main__":
     main()

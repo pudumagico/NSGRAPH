@@ -36,6 +36,7 @@ counted(T+2, C) :- count(T+1), pluckSize(T), C = #count{S': station(T,S), hasSiz
 counted(T+1, C) :- countIfEqual(T,X), cleans(X), C = #count{S: station(T,S), hasClean(S,X)}.
 counted(T+1, C) :- countIfEqual(T,X), sizes(X), C = #count{S: station(T,S), hasSize(S,X)}.
 counted(T+1, C) :- countIfEqual(T,X), musics(X), C = #count{S: station(T,S), hasMusic(S,X)}.
+counted(T+1, 0) :- countIfEqual(T,X), not counted(T+1, _).
 
 counted(T+1, C) :- countIfEqual(T,da), C = #count{S: station(T,S), hasDA(S,true)}.
 counted(T+1, C) :- countIfEqual(T,ra), C = #count{S: station(T,S), hasRA(S,true)}.
