@@ -36,7 +36,6 @@ def parse_graph(file_path, reader):
     vertices_list = recognize_topology(
         vertices_list, preprocessed, visualised, edge_thickness, mode)
     graph = postprocess(vertices_list, is_rotated)
-
     nodes = []
     edges = []
     for element in graph:

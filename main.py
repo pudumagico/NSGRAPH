@@ -10,7 +10,7 @@ from parse_background_knowledge import fill_background_knowledge, gt_data
 
 reader = easyocr.Reader(['en'])
 
-USE_GT = False
+USE_GT = True
 
 def main():
     data_filepath = sys.argv[1]
@@ -34,7 +34,6 @@ def main():
             data_filepath) + '/' + graph, reader)
 
         if USE_GT:
-
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
         else:
@@ -75,24 +74,25 @@ def main():
                                 ans_found = True
                                 print('correct')
                                 break
-                    if str(model_ans) == str(answers[i]).replace(' ', '').lower() and not ans_found:
-                        # correct += 1
-                        ans_found = True
-                        print('correct')
-                        break
+                            
+            if not ans_found and str(model_ans) == str(answers[i]).replace(' ', '').lower():
+                # correct += 1
+                ans_found = True
+                print('correct')
+                break
 
             len_models = len(models)
-            if str(len_models) == str(answers[i]).lower() and not ans_found:
+            if not ans_found and str(len_models) == str(answers[i]).lower():
                 # correct += 1
                 ans_found = True
                 print('correct')
                 continue
 
-            if not ans_found and 'cycle' in questions_nl[i] and not models and str(answers[i]).replace(' ', '').lower() == 'false':
+            if not ans_found and not models and str(answers[i]).replace(' ', '').lower() == 'false':
                 # correct += 1
                 ans_found = True
                 print('correct')
-                continue
+                continue     
 
             if not ans_found:
                 print(i, questions_nl[i])
@@ -104,7 +104,7 @@ def main():
                 correct=+1
 
             total+=1
-        print('Accuracy:', (total-correct)/total * 100)
+        print('Accuracy:', (total-correct)/total * 100, total-correct, total)
 
 
 if __name__ == "__main__":

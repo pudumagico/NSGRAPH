@@ -59,6 +59,8 @@ sp((N,N')):- adjacent(T), station(T-1,N), station(T-1,N'), N<N'.
 adjacentAns(T+1, true) :- adjacent(T), cost(_,C), C=1.
 adjacentAns(T+1, false) :- adjacent(T), not adjacentAns(T+1, true).
 
+adjacentArchAns(T+1,N') :- adjacentArch(T, X), station(T-1,N), e(N,N').
+
 p((N,N')):- adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
 adjacentToAns(T+1, X) :- in(N,X), in(X,N'), adjacentTo(T), station(T-1,N), station(T-1,N'), N<N'.
 
@@ -120,5 +122,5 @@ ans(V) :- end(T), closestArchAns(T,V).
 ans(V) :- end(T), lineOnAns(T,V).
 ans(V) :- end(T), existAns(T,V).
 ans(V) :- end(T), archCountAns(T,V).
-
+ans(V) :- end(T), adjacentArchAns(T,V).
 #show ans/1.

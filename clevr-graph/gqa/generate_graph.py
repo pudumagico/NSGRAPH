@@ -92,9 +92,9 @@ class GraphGenerator(object):
 		self.args = args
 
 		self.stats = {
-			"lines": 22,
-			"stations_per_line": 20,
-			"map_radius": 25,
+			"lines": 8,
+			"stations_per_line": 7,
+			"map_radius": 10,
 			"min_station_dist": 0.8,
 		}
 

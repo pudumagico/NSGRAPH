@@ -1,5 +1,5 @@
-
-
+import networkx
+import matplotlib.pyplot as plt
 import os
 import os.path
 import yaml
@@ -18,9 +18,8 @@ from .args import *
 import logging
 logger = logging.getLogger(__name__)
 
-# from .london_graph import LondonGraph
-
-# lg = LondonGraph().read()
+from .london_graph import LondonGraph
+lg = LondonGraph().read()
 
 if __name__ == "__main__":
 
@@ -66,22 +65,36 @@ if __name__ == "__main__":
 		f_try = Counter()
 		f_success = Counter()
 
+		def random_select(l):
+			while True:
+				yield random.choice(l)	
+
 		def forms():
 			while True:
 				for form in question_forms:
 					yield form
 
 		def specs():
-			form_gen = forms()
+			form_gen = random_select(question_forms)
 			i = 0
 			fail = 0
 			with tqdm(total=total_gqa) as pbar:
 				while i < total_gqa:
-
+					
 					try:
+						import pprint
 						graph = GraphGenerator(args)
 						graph.generate()
 						g = graph.graph_spec
+						# pprint.pprint(g.__dict__)
+						# pprint.pprint(lg.gnx.nodes())
+						# pprint.pprint(lg.gnx.edges())
+						
+						# networkx.draw(lg.gnx, with_labels=True)
+						# # plt.savefig('plotgraph.png', dpi=300, bbox_inches='tight')
+						# plt.show()
+
+						# exit()
 						# g = lg
 						logger.debug("Generated graph")
 
@@ -131,14 +144,14 @@ if __name__ == "__main__":
 
 		yaml.dump_all(specs(), file, explicit_start=True)
 
-		# logger.info(f"GQA per question type: {f_success}")
+		logger.info(f"GQA per question type: {f_success}")
 
 		# for i in f_try:
 		# 	if i in f_success: 
 		# 		if f_success[i] < f_try[i]:
-		# 			logger.warn(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
+		# 			logger.warning(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
 		# 	else:
-		# 		logger.warn(f"Question form {i} totally failed to generate")
+		# 		logger.warning(f"Question form {i} totally failed to generate")
 
 				
 
