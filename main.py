@@ -25,7 +25,8 @@ def main():
 
     theory = open('theory.lp', "r").read()
     total = 0
-    correct = 0
+    incorrect = 0
+
     for graph in png_files:
 
         f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
@@ -59,52 +60,57 @@ def main():
                 for m in handle:
                     # print(m)
                     models.append(m)
+           
+            if type(answers[i]) == list:
+                answers[i].sort()
+                current_ans = [str(x).replace(' ', '').replace('-', '').lower() for x in answers[i]]
+            else:
+                current_ans = str(answers[i]).replace(' ', '').replace('-', '').lower()
 
             ans_found = False
             model_ans = []
             for model in models:
-                if not ans_found:
-                    # print(model.symbols(shown=True))
+                # print(model.symbols(shown=True))
                     for atom in model.symbols(shown=True):
-                        model_ans = []
-                        if atom.name == 'ans':
-                            model_ans.append(str(atom.arguments[0]))
-                            if str(atom.arguments[0]) == str(answers[i]).replace(' ', '').replace('-', '').lower():
+                        if not ans_found:
+                            if atom.name == 'ans':
+                                model_ans.append(str(atom.arguments[0]))
+                                if str(atom.arguments[0]) == current_ans:
                                 # correct += 1
-                                ans_found = True
-                                print('correct')
-                                break
-                            
-            if not ans_found and str(model_ans) == str(answers[i]).replace(' ', '').lower():
+                                    ans_found = True
+                                    # break
+                                
+            model_ans.sort()
+            if not ans_found and model_ans == current_ans:
                 # correct += 1
                 ans_found = True
-                print('correct')
-                break
 
             len_models = len(models)
-            if not ans_found and str(len_models) == str(answers[i]).lower():
+            if not ans_found and str(len_models) == current_ans:
                 # correct += 1
                 ans_found = True
-                print('correct')
-                continue
 
-            if not ans_found and not models and str(answers[i]).replace(' ', '').lower() == 'false':
+            if not ans_found and not models and current_ans == 'false':
                 # correct += 1
                 ans_found = True
-                print('correct')
-                continue     
 
             if not ans_found:
                 print(i, questions_nl[i])
                 print(i, questions[i])
-                print(i, str(answers[i]))
+                print(i, str(answers[i]), current_ans)
                 for m in models:
                     print(m.symbols(shown=True))
-                # exit()
-                correct=+1
+                incorrect += 1
 
             total+=1
-        print('Accuracy:', (total-correct)/total * 100, total-correct, total)
+
+        # print('Partial Total Questions:', total )
+        # print('Partial Correct Answers:', total-incorrect)
+        # print('Partial Accuracy:', (total-incorrect)/total * 100)
+
+    print('Total Questions:', total )
+    print('Correct Answers:', total-incorrect)
+    print('Accuracy:', (total-incorrect)/total * 100)
 
 
 if __name__ == "__main__":
