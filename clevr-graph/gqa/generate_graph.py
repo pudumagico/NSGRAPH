@@ -92,21 +92,21 @@ class GraphGenerator(object):
 		self.args = args
 
 		self.stats = {
-			"lines": 8,
-			"stations_per_line": 7,
+			"lines": 6,
+			"stations_per_line": 6,
 			"map_radius": 10,
-			"min_station_dist": 0.8,
+			"min_station_dist": 1,
 		}
 
 		if args.tiny:
 			self.stats["lines"] = 2
-			self.stats["stations_per_line"] = 3
+			self.stats["stations_per_line"] = 2
 			self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
 
 		elif args.small:
-			self.stats["lines"] = 5
-			self.stats["stations_per_line"] = 5
+			self.stats["lines"] = 4
+			self.stats["stations_per_line"] = 4
 			self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
 
@@ -338,11 +338,11 @@ class GraphGenerator(object):
 			ts = [i.p["name"] for i in stations]
 			ls = line.p["stroke"]
 			c = 'tab:'+line.p["color"]
-			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=4, markersize=48)
+			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=4, markersize=40)
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
-			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=10)
+			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=8)
 
 			for i in stations:
 				ax.annotate(i.p["name"], (i.pt[0] - 0.2,i.pt[1]+0.2), xycoords='data', annotation_clip=False)

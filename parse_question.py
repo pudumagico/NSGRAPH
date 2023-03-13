@@ -24,6 +24,7 @@ def parse_questions(yaml_filepath, graph_id):
                         questions.append(asp_question)
                         questions_nl.append(question_nl)
                         break
+                
 
     return questions, questions_nl, answers
 
@@ -73,7 +74,7 @@ question_forms = [
     re.compile("Which lines is ([a-zA-Z]+) on\?"),
     re.compile("How many lines is ([a-zA-Z]+) on\?"),
     re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) on the same line\?"),
-    re.compile("Which stations does ([a-zA-Z]+) pass through\?"),
+    re.compile("Which stations does ([ a-zA-Z]+) pass through\?"),
     re.compile("Which line has the most ([a-zA-Z]+) stations\?"),
 ]
 

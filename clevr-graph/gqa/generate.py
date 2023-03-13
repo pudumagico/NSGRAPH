@@ -145,7 +145,10 @@ if __name__ == "__main__":
 		yaml.dump_all(specs(), file, explicit_start=True)
 
 		logger.info(f"GQA per question type: {f_success}")
-
+		sum = 0
+		for q_type in f_success:
+			sum += f_success[q_type]
+		print(sum)
 		# for i in f_try:
 		# 	if i in f_success: 
 		# 		if f_success[i] < f_try[i]:

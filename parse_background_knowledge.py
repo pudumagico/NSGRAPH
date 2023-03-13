@@ -79,7 +79,7 @@ def fill_background_knowledge(file_path, graph_id, nodes, edges):
     return ''.join(node_preds), ''.join(edge_preds), ''.join(line_preds)
     
 
-def gt_data(file_path, graph_id, nodes, edges):
+def gt_data(file_path, graph_id):
 
     node_preds = []
     edge_preds = []

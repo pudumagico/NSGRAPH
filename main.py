@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 import easyocr
 import clingo
@@ -27,17 +28,20 @@ def main():
     total = 0
     incorrect = 0
 
+
+    start = time.time()
+    
     for graph in png_files:
 
         f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
 
-        nodes, edges = parse_graph(os.path.abspath(
-            data_filepath) + '/' + graph, reader)
-
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
-                data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+                data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
+            nodes, edges = parse_graph(os.path.abspath(
+            data_filepath) + '/' + graph, reader)
+    
             nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
 
@@ -71,14 +75,14 @@ def main():
             model_ans = []
             for model in models:
                 # print(model.symbols(shown=True))
-                    for atom in model.symbols(shown=True):
-                        if not ans_found:
-                            if atom.name == 'ans':
-                                model_ans.append(str(atom.arguments[0]))
-                                if str(atom.arguments[0]) == current_ans:
-                                # correct += 1
-                                    ans_found = True
-                                    # break
+                for atom in model.symbols(shown=True):
+                    if not ans_found:
+                        if atom.name == 'ans':
+                            model_ans.append(str(atom.arguments[0]))
+                            if str(atom.arguments[0]) == current_ans:
+                            # correct += 1
+                                ans_found = True
+                                # break
                                 
             model_ans.sort()
             if not ans_found and model_ans == current_ans:
@@ -98,7 +102,9 @@ def main():
                 print(i, questions_nl[i])
                 print(i, questions[i])
                 print(i, str(answers[i]), current_ans)
+                print(graph)
                 for m in models:
+                    # print(m)
                     print(m.symbols(shown=True))
                 incorrect += 1
 
@@ -107,10 +113,13 @@ def main():
         # print('Partial Total Questions:', total )
         # print('Partial Correct Answers:', total-incorrect)
         # print('Partial Accuracy:', (total-incorrect)/total * 100)
+    
+    end = time.time()
 
-    print('Total Questions:', total )
     print('Correct Answers:', total-incorrect)
+    print('Total Questions:', total )
     print('Accuracy:', (total-incorrect)/total * 100)
+    print('Time:', end - start)
 
 
 if __name__ == "__main__":
