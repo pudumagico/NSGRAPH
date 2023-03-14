@@ -1,0 +1,461 @@
+SMALL
+0 How many other stations are two stops or closer to Synoop?
+0 end(2).withinHops(1, 2).station(0,synoop).
+0 2 2
+7b498ac1-0db3-4583-a715-2793e2f7d03b.png
+[ans(1)]
+0 Which stations does Orange Qeiay pass through?
+0 end(2).stations(1).line(0,orangeqeiay).
+0 ['Ghaionds', 'Mciogs'] ['ghaionds', 'mciogs']
+65ed7cd8-5408-4e73-b1e9-ff3c34ce5819.png
+[]
+0 How many distinct routes are there between Knoips and Khoiac?
+0 end(2).paths(1).station(0,knoips).station(0,khoiac).
+0 1 1
+76c9e545-4914-4ddb-9cac-9c4bfe247b35.png
+0 Which stations does Brown Fiaord pass through?
+0 end(2).stations(1).line(0,brownfiaord).
+0 ['Priaorly', 'Symbaarn'] ['priaorly', 'symbaarn']
+0c899ddf-180b-4864-8018-517304145475.png
+[]
+0 What size is Sreaul?
+0 end(2).pickSize(1).station(0,sreaul).
+0 small small
+4e4e568a-55c6-4ac9-a653-de52de860edc.png
+[]
+0 How many music styles does Pink Typaably pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,pinktypaably).
+0 2 2
+e963162b-8c99-4188-b8c6-3c4aa6bb4c6e.png
+[ans(0)]
+0 Which lines is Schmietts on?
+0 end(2).linesOnNames(1).station(0,schmietts).
+0 ['Blue Truiecy'] ['bluetruiecy']
+ea9e62a2-93d8-42aa-add3-5a49109e9c24.png
+[]
+0 Which lines is Cycloiats on?
+0 end(2).linesOnNames(1).station(0,cycloiats).
+0 ['Cyan Mcmaesm', 'Orange Proiarty'] ['cyanmcmaesm', 'orangeproiarty']
+667ab057-5416-4686-ad86-ccac6becc466.png
+[ans(cyanmcmaesm)]
+0 How big is Mccruonk?
+0 end(2).pickSize(1).station(0,mccruonk).
+0 medium-sized mediumsized
+1f0046e5-1baa-48a4-aa57-7250b912f4b0.png
+[]
+0 At Schroegs what sort of music plays?
+0 end(2).pickMusic(1).station(0,schroegs).
+0 rnb rnb
+812d7646-e601-4e64-aae0-7a0e3f74227a.png
+[]
+0 Can you get rail connections at Cliuty?
+0 end(2).pickRA(1).station(0,cliuty).
+0 True true
+2a0ad2c5-5477-47d8-86c1-8a9e287ccdf5.png
+[]
+0 How many stations with rail connections does Blue Huip pass through?
+0 end(3).countIfEqual(2,ra).lineNodes(1).line(0,bluehuip).
+0 2 2
+09e5063e-361b-4205-910a-ecf2f773482d.png
+[ans(1)]
+0 How many sizes of station does Red Greulls pass through?
+0 end(4).count(3).pluckSize(2).lineNodes(1).line(0,redgreulls).
+0 2 2
+205fb420-b7b3-43ca-879f-c521d914d558.png
+[ans(0)]
+0 Is there a station called Physioust?
+0 end(2).exist(1).station(0,physioust).
+0 True true
+c00fc962-e349-4bc3-9ac6-d11bbaf2521e.png
+[ans(false)]
+0 Is there a station called Xeorty?
+0 end(2).exist(1).station(0,xeorty).
+0 True true
+dfa4badb-da4a-43eb-b34a-98ebf01d0119.png
+[ans(false)]
+MEDIUM
+0 Which lines is Mcdield on?
+0 end(2).linesOnNames(1).station(0,mcdield).
+0 ['Cyan Sqeahn'] ['cyansqeahn']
+5abc7410-051d-410c-8a9a-dd949d6b14f5.png
+[]
+0 How many distinct routes are there between Trieg and Gnoiarty?
+0 end(2).paths(1).station(0,trieg).station(0,gnoiarty).
+0 2 2
+a9d37f1c-106d-4d6d-bd94-b87da2c63f1a.png
+0 What is the cleanliness level of Pluip station?
+0 end(2).pickClean(1).station(0,pluip).
+0 clean clean
+0e031afd-59e5-4e18-a820-572cf2661e78.png
+[]
+0 How many stations are on the shortest path between Wholl and Gleab avoiding clean stations?
+0 end(3).countNodesBetween(2).shortestPathAvoid(1, clean).station(0,gleab).station(0,wholl).
+0 1 1
+5359bf44-60d5-4b6b-ba5b-0cb193a9dce1.png
+0 How many distinct routes are there between Sauely and Sriefy?
+0 end(2).paths(1).station(0,sauely).station(0,sriefy).
+0 1 1
+e1d19dee-d7b3-4921-b842-554e4dce5b68.png
+0 How many other stations are two stops or closer to Mcleelly?
+0 end(2).withinHops(1, 2).station(0,mcleelly).
+0 5 5
+5d457077-9332-4468-8aac-a0fd536af2be.png
+[ans(4)]
+0 Which lines is Sceaum on?
+0 end(2).linesOnNames(1).station(0,sceaum).
+0 ['Olive Smauecy'] ['olivesmauecy']
+23dd663c-2642-4b94-b1d0-c7d03cd541c7.png
+[]
+0 How many architectural styles does Red Khoung pass through?
+0 end(4).count(3).pluckArch(2).lineNodes(1).line(0,redkhoung).
+0 4 4
+0e6c6e00-b69b-491a-8ccf-dd3ba10a01e0.png
+[ans(0)]
+0 How many other stations are two stops or closer to Thoills?
+0 end(2).withinHops(1, 2).station(0,thoills).
+0 6 6
+9ca27812-588d-4225-85eb-089b3503a6df.png
+[ans(4)]
+0 How many other stations are two stops or closer to Hypift?
+0 end(2).withinHops(1, 2).station(0,hypift).
+0 4 4
+68fda954-90d5-40b4-91b5-101feb607460.png
+[ans(2)]
+0 How clean is Chush?
+0 end(2).pickClean(1).station(0,chush).
+0 rat-infested ratinfested
+a81ee612-797b-4e64-b2cb-147728118242.png
+[]
+0 Which lines is Smuosly on?
+0 end(2).linesOnNames(1).station(0,smuosly).
+0 ['Orange Gniagh'] ['orangegniagh']
+5272ccbd-5125-498f-9a13-5a960cc2cc7a.png
+[]
+0 How many sizes of station does Orange Wuogh pass through?
+0 end(4).count(3).pluckSize(2).lineNodes(1).line(0,orangewuogh).
+0 3 3
+c17d5d4d-e35e-4358-9965-c6a83a2b48ee.png
+[ans(0)]
+0 How many lines is Nieush on?
+0 end(2).linesOnCount(1).station(0,nieush).
+0 3 3
+b423822b-1b59-4727-82ea-21c15422a33c.png
+[ans(0)]
+0 Which victorian station is adjacent to Psychash?
+0 end(2).adjacentArch(1, victorian).station(0,psychash).
+0 Sraav sraav
+a4c62a31-a04a-4d0d-8662-377576742765.png
+[]
+0 How many stations are on the shortest path between Kriarr and Ghuits avoiding clean stations?
+0 end(3).countNodesBetween(2).shortestPathAvoid(1, clean).station(0,ghuits).station(0,kriarr).
+0 1 1
+950ef811-06ee-4dff-b59f-63612ae6ff8f.png
+0 How many music styles does Purple Kwaol pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,purplekwaol).
+0 3 3
+27f75f42-b28f-4307-a092-b797d6de61c9.png
+[ans(0)]
+0 Describe Miov station's architectural style.
+0 end(2).pickArch(1).station(0,miov).
+0 modernist modernist
+3d27a990-3a18-421c-a65b-84dd3350c687.png
+[]
+0 What's the nearest station to Pfiends with concrete architecture?
+0 end(2).closestArch(1, concrete).station(0,pfiends).
+0 Schmiird schmiird
+65ce1561-cb68-4737-9f06-055b229c42c1.png
+0 How many music styles does Orange Pliows pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,orangepliows).
+0 2 2
+4970d8fe-5fb0-4f13-b23a-8d5c5fe4a51c.png
+[ans(0)]
+0 How many stations with disabled access does Blue Chreaurds pass through?
+0 end(3).countIfEqual(2,da).lineNodes(1).line(0,bluechreaurds).
+0 2 2
+cec52089-1cac-45a9-83bd-ca0fab5d0fe1.png
+[ans(1)]
+0 How many distinct routes are there between Wriint and Dyneaurts?
+0 end(2).paths(1).station(0,wriint).station(0,dyneaurts).
+0 2 2
+9a64930e-648a-4a80-b075-0038213083bc.png
+0 What is the cleanliness level of Chruorf station?
+0 end(2).pickClean(1).station(0,chruorf).
+0 shabby shabby
+40a45242-ac02-41cf-9552-e3f02fd0fd26.png
+[]
+0 Which stations does Green Schmaeds pass through?
+0 end(2).stations(1).line(0,greenschmaeds).
+0 ['Schloelt', 'Sraests', 'Truiesk'] ['schloelt', 'sraests', 'truiesk']
+fcc3f298-b545-4fb7-bd82-a52df33532db.png
+[ans(truiesk), ans(schloelt)]
+0 Is there a station called Hydroians?
+0 end(2).exist(1).station(0,hydroians).
+0 True true
+ca59b754-7359-4202-887e-64f9d2a9d375.png
+[ans(false)]
+0 How many distinct routes are there between Snieys and Shib?
+0 end(2).paths(1).station(0,snieys).station(0,shib).
+0 1 1
+228dab6f-3275-49b4-b78c-cb9d2f40d534.png
+0 Which stations does Purple Xeolt pass through?
+0 end(2).stations(1).line(0,purplexeolt).
+0 ['Briaops', 'Daorth', 'Kluys', 'Qaerg'] ['briaops', 'daorth', 'kluys', 'qaerg']
+24c2d911-e2f6-4a06-8281-001340f54fee.png
+[ans(qaerg), ans(kluys)]
+0 What's the nearest station to Juiz with glass architecture?
+0 end(2).closestArch(1, glass).station(0,juiz).
+0 Fuieny fuieny
+0aa34859-ecb1-4608-975c-189333bcb1f9.png
+0 How many stations are between Syneap and Scoiasp?
+0 end(3).countNodesBetween(2).shortestPath(1).station(0,syneap).station(0,scoiasp).
+0 3 3
+68bbb74f-3884-4046-b1a1-f3916fb2d684.png
+0 How many stations with rail connections does Purple Yearry pass through?
+0 end(3).countIfEqual(2,ra).lineNodes(1).line(0,purpleyearry).
+0 3 3
+9cc62ea2-ae37-4396-95c6-cc0b0edb4b15.png
+[ans(2)]
+0 How many music styles does Red Mcgoeks pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,redmcgoeks).
+0 4 4
+2ae08eb1-ad82-4fc7-9739-3fbfadbb3dba.png
+[ans(3)]
+0 Are Qiudy and Dern on the same line?
+0 end(2).sameLine(1).station(0,qiudy).station(0,dern).
+0 True true
+a9a3fbc8-23ba-4528-8cbc-812972484dcc.png
+[ans(false)]
+0 Are Cheids and Kreiat connected by the same station?
+0 end(2).commonStation(1).station(0,cheids).station(0,kreiat).
+0 True true
+8eacb7f6-b1fe-417d-843f-d5c1835fdf74.png
+0 Is there disabled access at Scheauws?
+0 end(2).pickDA(1).station(0,scheauws).
+0 True true
+b04fccb7-7f8a-4f8c-8820-0637a9612175.png
+[]
+0 What's the nearest station to Chairty with glass architecture?
+0 end(2).closestArch(1, glass).station(0,chairty).
+0 Thriohl thriohl
+16dddaf2-9202-4264-9cc1-e37848972c0d.png
+0 What's the nearest station to Psychok with victorian architecture?
+0 end(2).closestArch(1, victorian).station(0,psychok).
+0 Blioss blioss
+6c7ad435-61e9-420c-910a-56c4f6ce5247.png
+0 Can you get rail connections at Cloogs?
+0 end(2).pickRA(1).station(0,cloogs).
+0 True true
+a5bc1434-4d3d-4559-b6e2-07881f473001.png
+[]
+0 What music plays at Ceam?
+0 end(2).pickMusic(1).station(0,ceam).
+0 country country
+f5af5c7f-21d9-4f20-aacb-65959edd2ee8.png
+[]
+0 Which lines is Schwauls on?
+0 end(2).linesOnNames(1).station(0,schwauls).
+0 ['Pink Mccloinds'] ['pinkmccloinds']
+7b2e9299-da3a-4922-a771-8122c6c58af2.png
+[]
+0 How many clean stations does Green Taiogh pass through?
+0 end(3).countIfEqual(2,clean).lineNodes(1).line(0,greentaiogh).
+0 2 2
+b36b3d92-e4ca-47fc-9cb8-c4c5e0045ee9.png
+[ans(1)]
+0 Which lines is Giotz on?
+0 end(2).linesOnNames(1).station(0,giotz).
+0 ['Blue Froell', 'Brown Syniurs'] ['bluefroell', 'brownsyniurs']
+923293f2-b18e-40dc-bc28-9a03fe0d563c.png
+[]
+0 How many architectural styles does Orange Khiash pass through?
+0 end(4).count(3).pluckArch(2).lineNodes(1).line(0,orangekhiash).
+0 3 3
+6d7c6a76-6f5e-40ee-bcb3-c1f22775524a.png
+[ans(2)]
+0 Which stations does Purple Spriaolly pass through?
+0 end(2).stations(1).line(0,purplespriaolly).
+0 ['Blaact', 'Chrairr', 'Knon', 'Squc'] ['blaact', 'chrairr', 'knon', 'squc']
+6af2163e-6e9f-44d0-ba6f-be39391668d4.png
+[ans(chrairr), ans(blaact)]
+0 Which stations does Cyan Kliurts pass through?
+0 end(2).stations(1).line(0,cyankliurts).
+0 ['Bauepp', 'Glaiocks', 'Tsuenn'] ['bauepp', 'glaiocks', 'tsuenn']
+99cc9208-767c-4734-b71e-4e0032178e9b.png
+[ans(bauepp), ans(glaiocks)]
+0 Are Sprouw and Gnood connected by the same station?
+0 end(2).commonStation(1).station(0,sprouw).station(0,gnood).
+0 True true
+93c4b2e3-b23b-4ab8-9026-93dd2cfbc2ac.png
+0 Is there a station called Veiw?
+0 end(2).exist(1).station(0,veiw).
+0 True true
+30f276b3-8020-4d3d-b619-27dd3dca1a51.png
+[ans(false)]
+0 At Yaiamp what sort of music plays?
+0 end(2).pickMusic(1).station(0,yaiamp).
+0 classical classical
+d747c1ef-e939-4dcf-8dbb-ca61ea68114b.png
+[]
+0 How many distinct routes are there between Thauedly and Yeants?
+0 end(2).paths(1).station(0,thauedly).station(0,yeants).
+0 1 1
+2592bc17-bf2d-4f7a-9545-a50730b156cb.png
+0 How many sizes of station does Cyan Biouff pass through?
+0 end(4).count(3).pluckSize(2).lineNodes(1).line(0,cyanbiouff).
+0 2 2
+ac01307c-6633-422c-8e97-bfd2817ef99c.png
+[ans(0)]
+0 How many lines is Schmeasly on?
+0 end(2).linesOnCount(1).station(0,schmeasly).
+0 3 3
+133dc252-b25d-49fc-905b-47b75de6506a.png
+[ans(4)]
+0 How many other stations are two stops or closer to Skiuds?
+0 end(2).withinHops(1, 2).station(0,skiuds).
+0 6 6
+a7b8a331-97e3-4d06-9123-51c44d3b2c15.png
+[ans(5)]
+0 How many sizes of station does Brown Phaash pass through?
+0 end(4).count(3).pluckSize(2).lineNodes(1).line(0,brownphaash).
+0 3 3
+d65d37c4-b923-4467-a2b1-b60b08bd3be8.png
+[ans(0)]
+0 How many stations are on the shortest path between Kwoav and Broiafy avoiding shabby stations?
+0 end(3).countNodesBetween(2).shortestPathAvoid(1, shabby).station(0,broiafy).station(0,kwoav).
+0 1 1
+989aac2e-7bbc-44ba-b4cf-65e49b5f1dd8.png
+0 How many stations are on the shortest path between Kib and Tion avoiding dirty stations?
+0 end(3).countNodesBetween(2).shortestPathAvoid(1, dirty).station(0,tion).station(0,kib).
+0 1 1
+2cbd13ad-576d-41ab-a89f-2cc9fa9687c8.png
+0 How many sizes of station does Green Jact pass through?
+0 end(4).count(3).pluckSize(2).lineNodes(1).line(0,greenjact).
+0 2 2
+f8f40f7a-cc1b-46b5-8438-ab7db61ca53f.png
+[ans(1)]
+0 Which stations does Brown Piup pass through?
+0 end(2).stations(1).line(0,brownpiup).
+0 ['Gniatt', 'Sprantly', 'Thront', 'Vet'] ['gniatt', 'sprantly', 'thront', 'vet']
+d18d6759-2f36-4f5b-8cfa-5d4b1d432ac1.png
+[ans(thront), ans(vet)]
+0 How many other stations are two stops or closer to Pliut?
+0 end(2).withinHops(1, 2).station(0,pliut).
+0 4 4
+fe78378a-873e-4854-96b4-242013ca0ea3.png
+[ans(0)]
+0 What architectural style is Khic?
+0 end(2).pickArch(1).station(0,khic).
+0 glass glass
+1725977a-ea56-4a5e-8659-ed19a75850d3.png
+[]
+0 Does Faitz have rail connections?
+0 end(2).pickRA(1).station(0,faitz).
+0 True true
+a57d9ad6-66ef-4e22-bfa7-b5db860f1011.png
+[]
+0 What's the nearest station to Veiadly with victorian architecture?
+0 end(2).closestArch(1, victorian).station(0,veiadly).
+0 Typaiand typaiand
+98154c72-da8e-4c77-b9bf-f2aad43967d7.png
+0 How many architectural styles does Cyan Hyaiobs pass through?
+0 end(4).count(3).pluckArch(2).lineNodes(1).line(0,cyanhyaiobs).
+0 3 3
+a3d3b3a9-ef95-458b-88be-0798d3441b71.png
+[ans(2)]
+0 How many stations are between Dreupp and Prolt?
+0 end(3).countNodesBetween(2).shortestPath(1).station(0,dreupp).station(0,prolt).
+0 1 1
+a5995ecc-85b3-47fc-b4f0-aadd25e2135a.png
+0 Which station is adjacent to Diufy and Twuamp?
+0 end(2).adjacentTo(1).station(0,diufy).station(0,twuamp).
+0 Tsooly tsooly
+c14c3020-e1fe-47bd-a2d8-00d138dc49f2.png
+[]
+0 How clean is Kroams?
+0 end(2).pickClean(1).station(0,kroams).
+0 dirty dirty
+48168ac2-9d5b-4d76-bef8-ad8f5cc5fab4.png
+[]
+0 How clean is Noify?
+0 end(2).pickClean(1).station(0,noify).
+0 shabby shabby
+92966e73-6297-4844-b27c-e4457758f113.png
+[]
+0 How many other stations are two stops or closer to Wiism?
+0 end(2).withinHops(1, 2).station(0,wiism).
+0 8 8
+437e2c66-1dfa-4dba-9834-a01954453e21.png
+[ans(7)]
+0 How many distinct routes are there between Twoew and Schwieuft?
+0 end(2).paths(1).station(0,twoew).station(0,schwieuft).
+0 1 1
+f2782b69-ba46-4a8d-a73e-31578a080111.png
+0 How many distinct routes are there between Guiefy and Mcluietch?
+0 end(2).paths(1).station(0,guiefy).station(0,mcluietch).
+0 2 2
+1a285482-c021-4329-95a9-2fc908c8abeb.png
+[]
+0 How many architectural styles does Brown Daasly pass through?
+0 end(4).count(3).pluckArch(2).lineNodes(1).line(0,browndaasly).
+0 2 2
+a013c6a1-10c8-4484-8e78-8e7b489c1782.png
+[ans(0)]
+0 How many stations are between Szaung and Proatch?
+0 end(3).countNodesBetween(2).shortestPath(1).station(0,szaung).station(0,proatch).
+0 2 2
+4225d688-aa39-4d42-8bfd-8ab2ea022fcc.png
+0 Which lines is Scruiws on?
+0 end(2).linesOnNames(1).station(0,scruiws).
+0 ['Blue Draads'] ['bluedraads']
+5a2d3a8a-e375-453c-b740-2606645fe622.png
+[]
+0 How many stations with rail connections does Cyan Mcfuocy pass through?
+0 end(3).countIfEqual(2,ra).lineNodes(1).line(0,cyanmcfuocy).
+0 2 2
+30544e43-5c48-4e2a-8c76-c381058352e3.png
+[ans(1)]
+0 How many other stations are two stops or closer to Fuck?
+0 end(2).withinHops(1, 2).station(0,fuck).
+0 4 4
+5f9304ec-6fc6-492e-bcaa-e9dcc66705b2.png
+[ans(3)]
+0 How many music styles does Cyan Sweoss pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,cyansweoss).
+0 3 3
+9f512f97-5efe-417f-aa79-beddcbf38503.png
+[ans(1)]
+LARGE
+0 How many music styles does Purple Schoin pass through?
+0 end(4).count(3).pluckMusic(2).lineNodes(1).line(0,purpleschoin).
+0 5 5
+9b2e68ad-b16b-4944-8a25-322abc00e7b1.png
+[ans(0)]
+0 How many clean stations does Green Lioutch pass through?
+0 end(3).countIfEqual(2,clean).lineNodes(1).line(0,greenlioutch).
+0 2 2
+0b850876-c4e8-4f5a-8cbf-43ae80dbf27e.png
+[ans(0)]
+0 What music plays at Degy?
+0 end(2).pickMusic(1).station(0,degy).
+0 electronic electronic
+79576ee9-ddca-4b6a-b26d-3460677291eb.png
+[]
+0 Is there disabled access at Fibly?
+0 end(2).pickDA(1).station(0,fibly).
+0 True true
+ebcc67e7-42d6-4071-94ed-be6285692b40.png
+[]
+0 Does Hypehn have rail connections?
+0 end(2).pickRA(1).station(0,hypehn).
+0 True true
+2a754607-b4c6-4e27-8e27-ffb441efdd93.png
+[]
+0 How many distinct routes are there between Flouz and Raerly?
+0 end(2).paths(1).station(0,flouz).station(0,raerly).
+0 7 7
+a12234bf-72b8-449b-be54-36fcf39e2fc8.png
+0 How many distinct routes are there between Mcnaags and Mckib?
+0 end(2).paths(1).station(0,mcnaags).station(0,mckib).
+0 2 2
+7cea09c3-2c61-4f4c-a32a-f5377cc055e0.png
+[]
