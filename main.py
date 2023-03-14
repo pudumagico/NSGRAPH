@@ -11,7 +11,7 @@ from parse_background_knowledge import fill_background_knowledge, gt_data
 
 reader = easyocr.Reader(['en'])
 
-USE_GT = True
+USE_GT = False
 
 def main():
     data_filepath = sys.argv[1]
