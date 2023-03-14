@@ -28,7 +28,6 @@ def main():
     total = 0
     incorrect = 0
 
-
     start = time.time()
     
     for graph in png_files:
@@ -46,6 +45,7 @@ def main():
                 nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
             except:
+                print('EXCEPTION', graph)
                 continue
 
         f.write(nodes)
@@ -113,9 +113,11 @@ def main():
 
             total+=1
 
-        print('Partial Total Questions:', total )
+        partial_end = time.time()
         print('Partial Correct Answers:', total-incorrect)
+        print('Partial Total Questions:', total )
         print('Partial Accuracy:', (total-incorrect)/total * 100)
+        print('Partial Time:', partial_end - start)
     
     end = time.time()
 
@@ -123,7 +125,6 @@ def main():
     print('Total Questions:', total )
     print('Accuracy:', (total-incorrect)/total * 100)
     print('Time:', end - start)
-
 
 if __name__ == "__main__":
     main()
