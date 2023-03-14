@@ -39,11 +39,14 @@ def main():
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
-            nodes, edges = parse_graph(os.path.abspath(
-            data_filepath) + '/' + graph, reader)
-    
-            nodes, edges, lines = fill_background_knowledge(os.path.abspath(
-                data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+            try:
+                nodes, edges = parse_graph(os.path.abspath(
+                data_filepath) + '/' + graph, reader)
+
+                nodes, edges, lines = fill_background_knowledge(os.path.abspath(
+                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+            except:
+                continue
 
         f.write(nodes)
         f.write(edges)
