@@ -110,9 +110,9 @@ def main():
 
             total+=1
 
-        # print('Partial Total Questions:', total )
-        # print('Partial Correct Answers:', total-incorrect)
-        # print('Partial Accuracy:', (total-incorrect)/total * 100)
+        print('Partial Total Questions:', total )
+        print('Partial Correct Answers:', total-incorrect)
+        print('Partial Accuracy:', (total-incorrect)/total * 100)
     
     end = time.time()
 
