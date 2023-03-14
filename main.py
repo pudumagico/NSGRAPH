@@ -99,13 +99,13 @@ def main():
                 ans_found = True
 
             if not ans_found:
-                print(i, questions_nl[i])
-                print(i, questions[i])
-                print(i, str(answers[i]), current_ans)
-                print(graph)
-                for m in models:
+                # print(i, questions_nl[i])
+                # print(i, questions[i])
+                # print(i, str(answers[i]), current_ans)
+                # print(graph)
+                # for m in models:
                     # print(m)
-                    print(m.symbols(shown=True))
+                    # print(m.symbols(shown=True))
                 incorrect += 1
 
             total+=1
