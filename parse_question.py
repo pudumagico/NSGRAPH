@@ -13,12 +13,14 @@ def parse_questions(yaml_filepath, graph_id):
         for data in docs:
             if data['graph']['id'] == graph_id:
                 question_nl = data['question']['english']
+                print(question_nl)
                 for i, regex in enumerate(question_forms):
                     match = regex.match(question_nl)
                     if match:
                         args = list(map(str.lower, list(match.groups())))
+                        # print(args)
                         # args.reverse()
-                        args = [x.replace(' ', '') for x in args]
+                        args = [x.replace(' ', '').replace('-', '') for x in args]
                         answers.append(data['answer'])
                         asp_question = question_form_asp[i].format(*args)
                         questions.append(asp_question)
@@ -60,7 +62,7 @@ question_forms = [
     re.compile(
         "How many other stations are two stops or closer to ([a-zA-Z]+)\?"),
     re.compile(
-        "What's the nearest station to ([a-zA-Z]+) with ([a-zA-Z]+) architecture\?"),
+        "What's the nearest station to ([a-zA-Z]+) with ([a-zA-Z-]+) architecture\?"),
     re.compile(
         "How many distinct routes are there between ([a-zA-Z]+) and ([a-zA-Z]+)\?"),
     re.compile("Is ([a-zA-Z]+) part of a cycle\?"),

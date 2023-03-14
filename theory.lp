@@ -112,9 +112,9 @@ sp((N,N'))  :- commonStation(T), station(T-1,N), station(T-1,N'), N<N'.
 commonStationAns(T+1, true)     :- commonStation(T), cost((N,N'), C), C = 2.
 commonStationAns(T+1, false)    :- commonStation(T), not commonStationAns(T+1, true).
 
-closestArchAns(T+1,N) :- closestArch(T, A), station(T-1,N), hasArch(N,A).
-sp((N,N')) :- not closestArchAns(T+1,N), closestArch(T, A), station(T-1,N), hasArch(N',A), N!=N'.
-closestArchAns(T+1,S) :- closestArch(T,_), X = #min{ C : cost((N,N'), C)}, sp((_,S),X).
+closestArchAns(T+1,N)   :- closestArch(T, A), station(T-1,N), hasArch(N,A).
+sp((N,N'))              :- not closestArchAns(T+1,_), closestArch(T, A), station(T-1,N), hasArch(N',A), N!=N'.
+closestArchAnsSP(T+1,S)   :- closestArch(T,_), X = #min{ C,(N,N') : cost((N,N'), C)}, cost((N,S), X).
 
 lineOnAns(T+1,LN)   :- linesOnNames(T), station(T-1,N), hasNodes(LN,N).
 lineOnAns(T+1,C)    :- linesOnCount(T), station(T-1,N), C=#count{LNAME : hasNodes(LNAME,N)}.
@@ -138,6 +138,7 @@ ans(V) :- end(T), adjacentToAns(T,V).
 ans(V) :- end(T), sameLineAns(T,V).
 ans(V) :- end(T), commonStationAns(T,V).
 ans(V) :- end(T), closestArchAns(T,V).
+ans(V) :- end(T), closestArchAnsSP(T,V).
 ans(V) :- end(T), lineOnAns(T,V).
 ans(V) :- end(T), existAns(T,V).
 ans(V) :- end(T), archCountAns(T,V).
@@ -145,3 +146,4 @@ ans(V) :- end(T), adjacentArchAns(T,V).
 ans(V) :- end(T), stationsAns(T,V).
 
 #show ans/1.
+#show minClosestArch/2.
