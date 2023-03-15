@@ -48,6 +48,7 @@ def segment(source: np.ndarray, preprocessed: np.ndarray, mode: Mode) \
     # remove edges
     edgeless, edge_thickness = remove_edges(filled)
 
+
     # detect vertices
     if mode == Mode.PRINTED:
         vertices_list, visualised, preprocessed = find_vertices(source, preprocessed, edgeless, 1.5, 0.55)
@@ -81,9 +82,9 @@ def fill_vertices(image: np.ndarray, mode: Mode) -> np.ndarray:
         image = cv.morphologyEx(image, cv.MORPH_CLOSE, Kernel.k3, iterations=1)
         image = fill_circular_shapes(image, 18, round_factor)
     elif mode == Mode.CLEAN_BG:
-        round_factor = 2
-        image = fill_elliptical_contours(image, 0.3, round_factor)
-        image = fill_circular_shapes(image, 13, round_factor)
+        round_factor = 1
+        # image = fill_elliptical_contours(image, 0.3, round_factor)
+        image = fill_circular_shapes(image, 50, round_factor)
     elif mode == Mode.GRID_BG:
 
         round_factor = 2.5
@@ -307,24 +308,26 @@ def find_vertices(source: np.ndarray, preprocessed: np.ndarray, edgeless: np.nda
     """
     # finding contours of vertices
     contours, hierarchy = cv.findContours(edgeless, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+    # print(contours)
+    # exit()
 
     # creating vertices from contours
     vertices_list = []
     visualized = np.copy(source)
+
     preprocessed_cp = preprocessed.copy()
     image_area = edgeless.shape[0] * edgeless.shape[1]
     for i in range(0, len(contours)):
         if hierarchy[0][i][3] == -1:  # outer contours
             cnt = contours[i]
             x, y, w, h = cv.boundingRect(cnt)
-            if 1.0 / round_ratio <= h / w <= round_ratio:  # circular enough contours
+            if 1:  # circular enough contours
                 (x, y), r = cv.minEnclosingCircle(cnt)
                 x, y, r = (int(x), int(y), int(r * 1.05))
 
                 fill_ratio = circle_fill_ratio(edgeless, x, y, r)
 
-                if fill_ratio >= min_fill \
-                        and image_area * VERTEX_AREA_UPPER >= cv.contourArea(cnt) >= image_area * VERTEX_AREA_LOWER:
+                if 1:
                     # determining vertex color
                     is_filled, color = vertex_color_fill(cv.medianBlur(preprocessed, 5), source, x, y, r,
                                                          COLOR_R_FACTOR, COLOR_THRESHOLD)
@@ -335,10 +338,10 @@ def find_vertices(source: np.ndarray, preprocessed: np.ndarray, edgeless: np.nda
                     thickness = 1 if is_filled else 2
                     cv.circle(visualized, (x, y), r, Color.GREEN, thickness, 8, 0)
                     # cv.putText(visualized, "F", (abs(x-10), abs(y+10)), cv.QT_FONT_NORMAL, 1.0, Color.GREEN)
-                elif fill_ratio < min_fill:  # remove unused contour
-                    cv.drawContours(preprocessed_cp, contours, i, Color.BG, thickness=cv.FILLED)
-            else:  # remove unused contour
-                cv.drawContours(preprocessed_cp, contours, i, Color.BG, thickness=cv.FILLED)
+            #     elif fill_ratio < min_fill:  # remove unused contour
+            #         cv.drawContours(preprocessed_cp, contours, i, Color.BG, thickness=cv.FILLED)
+            # else:  # remove unused contour
+            #     cv.drawContours(preprocessed_cp, contours, i, Color.BG, thickness=cv.FILLED)
 
     return vertices_list, visualized, preprocessed_cp
 
@@ -409,8 +412,8 @@ def vertex_color_fill(binary: np.ndarray, source: np.ndarray, x: int, y: int, r:
 
     # calculate vertex color
     pixel_arr = extract_circle_area(source, x, y, int(r * r_factor))
-    b = np.average(pixel_arr[:, 0])
-    g = np.average(pixel_arr[:, 1])
-    r = np.average(pixel_arr[:, 2])
+    b = 1
+    g = 1
+    r = 1
 
     return is_filled, (int(b), int(g), int(r))

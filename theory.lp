@@ -114,19 +114,18 @@ commonStationAns(T+1, false)    :- commonStation(T), not commonStationAns(T+1, t
 
 closestArchAns(T+1,N)   :- closestArch(T, A), station(T-1,N), hasArch(N,A).
 sp((N,N'))              :- not closestArchAns(T+1,_), closestArch(T, A), station(T-1,N), hasArch(N',A), N!=N'.
-closestArchAnsSP(T+1,S)   :- closestArch(T,_), X = #min{ C,(N,N') : cost((N,N'), C)}, cost((N,S), X).
+closestArchAnsSP(T+1,S) :- closestArch(T,_), X = #min{ C,(N,N') : cost((N,N'), C)}, cost((N,S), X).
 
 lineOnAns(T+1,LN)   :- linesOnNames(T), station(T-1,N), hasNodes(LN,N).
 lineOnAns(T+1,C)    :- linesOnCount(T), station(T-1,N), C=#count{LNAME : hasNodes(LNAME,N)}.
 
-existAns(T+1,true) :- exist(T), station(T-1,N), node(A,C,D,R,M,N,S).
+existAns(T+1,true)  :- exist(T), station(T-1,N), node(A,C,D,R,M,N,S).
 existAns(T+1,false) :- exist(T), not existAns(T+1,true).
 
 archCount(N,V)          :- mostArch(T,A), V=#count{1,N,S : hasNodes(N,S), hasArch(S,A)}, line(Y,C,AC,ID,N).
-archCountAns(T+1,N')     :- mostArch(T,A), Z=#min{V : archCount(N,V)}, archCount(N',V), V=Z.
+archCountAns(T+1,N')    :- mostArch(T,A), Z=#min{V : archCount(N,V)}, archCount(N',V), V=Z.
 
-stationsAns(T+1, N):- stations(T), line(T-1,LN), hasNodes(LN,N).
-
+stationsAns(T+1, N)     :- stations(T), line(T-1,LN), hasNodes(LN,N).
 
 ans(V) :- end(T), attribute(T,V).
 ans(V) :- end(T), counted(T,V).
@@ -146,4 +145,3 @@ ans(V) :- end(T), adjacentArchAns(T,V).
 ans(V) :- end(T), stationsAns(T,V).
 
 #show ans/1.
-#show minClosestArch/2.

@@ -1,7 +1,6 @@
 from .Vertex import Vertex
 from typing import List
 
-
 def postprocess(vertices_list: List[Vertex], is_rotated: bool):
     """
     Save graph in .graph6 abd .graphml formats
@@ -10,7 +9,7 @@ def postprocess(vertices_list: List[Vertex], is_rotated: bool):
     :param save_path: path for saving resulted files
     :param is_rotated: flag indicating if graph has been rotated in preprocessing, if True rotation must be undone
     """
-    # graphml_format(vertices_list, is_rotated=False)
+    graphml_format(vertices_list, is_rotated=False)
     return vertices_list
 
 

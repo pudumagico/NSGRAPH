@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
 						# exit()
 						# g = lg
-						logger.debug("Generated graph")
+						logger.info("Generated graph")
 
 						if len(g.nodes) == 0 or len(g.edges) == 0:
 							raise ValueError("Empty graph was generated")
@@ -109,18 +109,22 @@ if __name__ == "__main__":
 							attempt += 1
 
 							if type_matches(form):
-
-								f_try[form.type_string] += 1
 								
-								logger.debug(f"Generating question '{form.english}'")
-								q, a = form.generate(g, args)
-
+								# f_try[form.type_string] += 1
+								
+								logger.info(f"Generating question '{form.english}'")
+								try:
+									q, a = form.generate(g, args)
+								except:
+									continue
+								if not a:
+									continue
 								f_success[form.type_string] += 1
 								i += 1
 								j += 1
 								pbar.update(1)
 
-								logger.debug(f"Question: '{q}', answer: '{a}'")
+								logger.info(f"Question: '{q}', answer: '{a}'")
 								if args.draw:
 									graph.draw(os.path.join("data", f"{g.id}.png"))
 
@@ -128,18 +132,19 @@ if __name__ == "__main__":
 									yield DocumentSpec(None,q,a).stripped()
 								else:
 									yield DocumentSpec(g,q,a).stripped()
-
-							if attempt > len(question_forms) * 3:
-								raise Exception(f"Could not find form that matches {args.type_prefix}")
+						
+							# if attempt > len(question_forms) * 3:
+							# 	raise Exception(f"Could not find form that matches {args.type_prefix}")
 							
 					except Exception as ex:
-						logger.debug(f"Exception {ex} whilst trying to generate GQA")
+						import traceback
+						logger.info(f"Exception {ex} whilst trying to generate GQA")
 
-						# ValueError is deemed to mean "should not generate" and not a bug in the underlying code
-						if not isinstance(ex, ValueError):
-							fail += 1
-							if fail >= max(total_gqa / 3, len(question_forms)):
-								raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
+						# # ValueError is deemed to mean "should not generate" and not a bug in the underlying code
+						# if not isinstance(ex, ValueError):
+						# 	fail += 1
+						# 	if fail >= max(total_gqa / 3, len(question_forms)):
+						# 		raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
 							
 
 		yaml.dump_all(specs(), file, explicit_start=True)
@@ -148,13 +153,13 @@ if __name__ == "__main__":
 		sum = 0
 		for q_type in f_success:
 			sum += f_success[q_type]
-		print(sum)
-		# for i in f_try:
-		# 	if i in f_success: 
-		# 		if f_success[i] < f_try[i]:
-		# 			logger.warning(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
-		# 	else:
-		# 		logger.warning(f"Question form {i} totally failed to generate")
+		# print(sum)
+		for i in f_try:
+			if i in f_success: 
+				if f_success[i] < f_try[i]:
+					logger.warning(f"Question form {i} failed to generate {f_try[i] - f_success[i]}/{f_try[i]}")
+			else:
+				logger.warning(f"Question form {i} totally failed to generate")
 
 				
 

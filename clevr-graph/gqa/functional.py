@@ -34,7 +34,7 @@ class FunctionalOperator(object):
 			return self.op(graph, *vals)
 		except Exception as ex:
 			logger.debug("Failed to execute operation {}({}) {}".format(type(self).__name__, vals, ex))
-			raise ex
+			# raise ex
 
 	def op(self, *args):
 		"""
@@ -317,8 +317,8 @@ class CountIfEqual(FunctionalOperator):
 class Mode(FunctionalOperator):
 	def op(self, graph, l):
 
-		if len(l) == 0:
-			raise ValueError("Cannot find mode of empty sequence")
+		# if len(l) == 0:
+		# 	raise ValueError("Cannot find mode of empty sequence")
 
 		c = Counter(l)
 		most = c.most_common(2)
@@ -331,7 +331,7 @@ class Mode(FunctionalOperator):
 		if most[0][1] > most[1][1]:
 			return most[0][0]
 
-		raise ValueError("No unique mode")
+		# raise ValueError("No unique mode")
 
 class Unique(FunctionalOperator):
 	def op(self, graph, l):
@@ -378,15 +378,15 @@ class UnpackUnitList(FunctionalOperator):
 	def op(self, graph, l:List):
 		if len(l) == 1:
 			return l[0]
-		else:
-			raise ValueError(f"List is length {len(l)}, expected 1")
+		# else:
+		# 	raise ValueError(f"List is length {len(l)}, expected 1")
 
 class Sample(FunctionalOperator):
 	def op(self, graph, l:List, n:int):
-		if len(l) < n:
-			raise ValueError(f"Cannot sample {n} items from list of length {len(l)}")
-		else:
-			return random.choices(l, k=n)
+		# if len(l) < n:
+		# 	raise ValueError(f"Cannot sample {n} items from list of length {len(l)}")
+		# else:
+		return random.choices(l, k=n)
 
 class First(FunctionalOperator):
 	def op(self, graph, l:List):
@@ -394,8 +394,8 @@ class First(FunctionalOperator):
 
 class MinBy(FunctionalOperator):
 	def op(self, graph, a, b):
-		if len(a) == 0:
-			raise ValueError("Cannot perform MinBy on empty list")
+		# if len(a) == 0:
+		# 	raise ValueError("Cannot perform MinBy on empty list")
 		return min(a, key=lambda i: b(i)(graph))
 
 

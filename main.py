@@ -45,7 +45,7 @@ def main():
                 nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
             except:
-                print('EXCEPTION', graph)
+                print('Graph Parsing Failed', graph)
                 continue
 
         f.write(nodes)
@@ -102,12 +102,12 @@ def main():
                 ans_found = True
 
             if not ans_found:
-                # print(i, questions_nl[i])
-                # print(i, questions[i])
-                # print(i, str(answers[i]), current_ans)
-                # print(graph)
-                # for m in models:
-                    # print(m)
+                print(i, questions_nl[i])
+                print(i, questions[i])
+                print(i, str(answers[i]), current_ans)
+                print(graph)
+                for m in models:
+                    print(m)
                     # print(m.symbols(shown=True))
                 incorrect += 1
 

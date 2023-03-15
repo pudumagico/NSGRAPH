@@ -70,9 +70,9 @@ class QuestionForm(object):
 		if self.arguments_valid(graph, *raw_args) and self.answer_valid(graph, answer, *raw_args):
 			return QuestionSpec(english, functional, cypher, self.type_id, self.type_string, self.group), answer
 
-		else:
-			raise ValueError("Arguments or answer invalid")
-
+		# else:
+			# raise ValueError("Arguments or answer invalid")
+			# pass
 	
 
 
