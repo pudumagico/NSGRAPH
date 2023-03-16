@@ -92,10 +92,12 @@ class GraphGenerator(object):
 		self.args = args
 
 		self.stats = {
-			"lines": 6,
-			"stations_per_line": 6,
-			"map_radius": 10,
-			"min_station_dist": 1,
+			"lines": 10,
+			"stations_per_line": 10,
+			"map_radius": 50,
+			"min_station_dist": 5,
+			"node_size": 10,
+			"label_size": 10,
 		}
 
 		if args.tiny:
@@ -103,12 +105,16 @@ class GraphGenerator(object):
 			self.stats["stations_per_line"] = 2
 			self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
+			self.stats["node_size"] = 40
+			self.stats["label_size"] = 10
 
 		elif args.small:
 			self.stats["lines"] = 4
 			self.stats["stations_per_line"] = 4
 			self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
+			self.stats["node_size"] = 40
+			self.stats["label_size"] = 10
 
 
 	def gen_a(self, Clz, prop_dict):
@@ -342,12 +348,10 @@ class GraphGenerator(object):
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
-			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=8)
+			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=10)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0] - 0.2,i.pt[1]+0.2), xycoords='data', annotation_clip=False)
-
-
+				ax.annotate(i.p["name"], (i.pt[0], i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
 
 		with open(filename, 'wb') as file:
 			plt.axis('off')
