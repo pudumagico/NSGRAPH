@@ -5,13 +5,15 @@ import time
 import easyocr
 import clingo
 
-from parse_image import parse_graph
+from parse_image import parse_labels, parse_graph
 from parse_question import parse_questions
 from parse_background_knowledge import fill_background_knowledge, gt_data
 
 reader = easyocr.Reader(['en'])
 
 USE_GT = False
+USE_OCR_GT = False
+USE_OGR_GT = False
 
 def main():
     data_filepath = sys.argv[1]
@@ -39,8 +41,11 @@ def main():
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
             try:
-                nodes, edges = parse_graph(os.path.abspath(
+                name_dict = parse_labels(os.path.abspath(
                 data_filepath) + '/' + graph, reader)
+                print(name_dict)
+                nodes, edges = parse_graph(os.path.abspath(
+                data_filepath) + '/' + graph, name_dict)
 
                 nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)

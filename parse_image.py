@@ -19,14 +19,8 @@ def find_closest_name(node, name_dict):
     return selected_name
 
 
-def parse_graph(file_path, reader):
+def parse_graph(file_path, name_dict):
 
-    names = reader.readtext(file_path)
-    name_dict = {}
-    for name in names:
-        x_center = (name[0][0][0] + name[0][1][0])/2
-        y_center = (name[0][0][1] + name[0][2][1])/2
-        name_dict[name[1]] = [x_center, y_center]
     source = cv.imread(file_path)
     mode = 1
 
@@ -47,3 +41,15 @@ def parse_graph(file_path, reader):
         name = find_closest_name(node, name_dict)
         node.append(name)
     return nodes, edges
+
+
+def parse_labels(file_path, reader):
+
+    names = reader.readtext(file_path)
+    name_dict = {}
+    for name in names:
+        x_center = (name[0][0][0] + name[0][1][0])/2
+        y_center = (name[0][0][1] + name[0][2][1])/2
+        name_dict[name[1]] = [x_center, y_center]
+
+    return name_dict
