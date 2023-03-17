@@ -76,7 +76,6 @@ class GeneratedLine(GeneratedEntity):
 			"line_stroke": self.p["stroke"],
 		}
 
-
 def gen_n(base, noise = 0.2):
 	return base
 	return round(random.gauss(base, noise*base))
@@ -84,9 +83,7 @@ def gen_n(base, noise = 0.2):
 def add_noise(base, noise=0.05):
 	return base * (1 - noise + random.random() * noise*2)
 
-
 class GraphGenerator(object):
-
 	def __init__(self, args):
 
 		self.args = args

@@ -13,7 +13,6 @@ def parse_questions(yaml_filepath, graph_id):
         for data in docs:
             if data['graph']['id'] == graph_id:
                 question_nl = data['question']['english']
-                # print(question_nl)
                 for i, regex in enumerate(question_forms):
                     match = regex.match(question_nl)
                     if match:

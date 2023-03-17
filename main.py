@@ -58,8 +58,8 @@ def main(fp, gt, ocrgt, ogrgt):
                     nodes, edges = parse_graph(os.path.abspath(
                         data_filepath) + '/' + graph, name_dict)
 
-                nodes, edges, lines = fill_background_knowledge(os.path.abspath(
-                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+                # nodes, edges, lines = fill_background_knowledge(os.path.abspath(
+                #     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
 
             except:
                 total += 1
