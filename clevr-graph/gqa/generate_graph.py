@@ -194,8 +194,8 @@ class GraphGenerator(object):
 			# for x, y in zip(xp, yp):
 			for [x,y] in np.transpose(pts):
 				s = self.gen_station_unique()
-				s.p["x"] = float(add_noise(x))
-				s.p["y"] = float(add_noise(y))
+				s.p["x"] = float(x)
+				s.p["y"] = float(y)
 				
 				stations.append(s)
 
