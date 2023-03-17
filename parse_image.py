@@ -1,3 +1,4 @@
+import yaml
 import cv2 as cv
 from scipy.spatial import distance
 
@@ -53,3 +54,62 @@ def parse_labels(file_path, reader):
         name_dict[name[1]] = [x_center, y_center]
 
     return name_dict
+
+def gt_labels(file_path, graph_id, map_radius = 4):
+    stream = open(file_path, "r")
+    all_info = yaml.load_all(stream, yaml.FullLoader)
+    incumbent_info = None
+    for info in all_info:
+        if info['graph']['id'] == str(graph_id):
+            incumbent_info = info
+            break
+    
+    gt_labels_dict = {}
+
+    for bkg_info_node in incumbent_info['graph']['nodes']:
+        x = (bkg_info_node['x'] + map_radius) * 1000/(map_radius*2)
+        y = 1000 - (bkg_info_node['y'] + map_radius) * 1000/(map_radius*2)
+        gt_labels_dict[bkg_info_node['name']] = [x,y]
+
+    return gt_labels_dict
+
+def gt_graph(file_path, graph_id, name_dict, map_radius = 50):
+    stream = open(file_path, "r")
+    all_info = yaml.load_all(stream, yaml.FullLoader)
+    incumbent_info = None
+    for info in all_info:
+        if info['graph']['id'] == str(graph_id):
+            incumbent_info = info
+            break
+
+    nodes = []
+    edges = []
+
+    node_index = 0
+    node_index_dict = {}
+    for bkg_info_node in incumbent_info['graph']['nodes']:
+        node_index_dict[bkg_info_node['name']] = node_index
+        # node_index.append([bkg_info_node['name'], node_index])
+        node_index += 1
+    
+    for bkg_info_node in incumbent_info['graph']['nodes']:
+        x = (bkg_info_node['x'] + map_radius) * 1000/(map_radius*2)
+        y = 1000 - (bkg_info_node['y'] + map_radius) * 1000/(map_radius*2)
+        
+        adjacency_list = []
+        for bkg_info_edge in incumbent_info['graph']['edges']:
+            if bkg_info_node['name'] == bkg_info_edge['station1_name']:
+                adjacency_list.append(node_index_dict[bkg_info_edge['station2_name']])
+            elif bkg_info_node['name'] == bkg_info_edge['station2_name']:
+                adjacency_list.append(node_index_dict[bkg_info_edge['station1_name']])
+
+        node = [x, y, 0]
+        nodes.append(node)
+        edges.append(list(set(adjacency_list)))
+
+    for node in nodes:
+        name = find_closest_name(node, name_dict)
+        node.append(name)
+
+    return nodes, edges
+

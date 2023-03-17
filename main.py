@@ -5,7 +5,7 @@ import time
 import easyocr
 import clingo
 
-from parse_image import parse_labels, parse_graph
+from parse_image import parse_labels, parse_graph, gt_labels, gt_graph
 from parse_question import parse_questions
 from parse_background_knowledge import fill_background_knowledge, gt_data
 
@@ -31,7 +31,7 @@ def main():
     incorrect = 0
 
     start = time.time()
-    
+
     for graph in png_files:
 
         f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
@@ -41,14 +41,25 @@ def main():
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
             try:
-                name_dict = parse_labels(os.path.abspath(
-                data_filepath) + '/' + graph, reader)
-                print(name_dict)
-                nodes, edges = parse_graph(os.path.abspath(
-                data_filepath) + '/' + graph, name_dict)
+                if USE_OCR_GT:
+                    name_dict = gt_labels(os.path.abspath(
+                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
+                else:
+                    name_dict = parse_labels(os.path.abspath(
+                        data_filepath) + '/' + graph, reader)
+
+                if USE_OGR_GT:
+                    nodes, edges = gt_graph(os.path.abspath(
+                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
+                else:
+                    nodes, edges = parse_graph(os.path.abspath(
+                        data_filepath) + '/' + graph, name_dict)
+                
+            
                 nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+            
             except:
                 print('EXCEPTION', graph)
                 continue
@@ -72,62 +83,51 @@ def main():
                 for m in handle:
                     # print(m)
                     models.append(m)
-           
+
             if type(answers[i]) == list:
                 answers[i].sort()
-                current_ans = [str(x).replace(' ', '').replace('-', '').lower() for x in answers[i]]
+                current_ans = [str(x).replace(' ', '').replace(
+                    '-', '').lower() for x in answers[i]]
             else:
-                current_ans = str(answers[i]).replace(' ', '').replace('-', '').lower()
+                current_ans = str(answers[i]).replace(
+                    ' ', '').replace('-', '').lower()
 
             ans_found = False
             model_ans = []
             for model in models:
-                # print(model.symbols(shown=True))
                 for atom in model.symbols(shown=True):
                     if not ans_found:
                         if atom.name == 'ans':
                             model_ans.append(str(atom.arguments[0]))
                             if str(atom.arguments[0]) == current_ans:
-                            # correct += 1
                                 ans_found = True
-                                # break
-                                
+
             model_ans.sort()
             if not ans_found and model_ans == current_ans:
-                # correct += 1
                 ans_found = True
 
             len_models = len(models)
             if not ans_found and str(len_models) == current_ans:
-                # correct += 1
                 ans_found = True
 
             if not ans_found and not models and current_ans == 'false':
-                # correct += 1
                 ans_found = True
 
             if not ans_found:
-                # print(i, questions_nl[i])
-                # print(i, questions[i])
-                # print(i, str(answers[i]), current_ans)
-                # print(graph)
-                # for m in models:
-                    # print(m)
-                    # print(m.symbols(shown=True))
                 incorrect += 1
 
-            total+=1
+            total += 1
 
         partial_end = time.time()
         print('Partial Correct Answers:', total-incorrect)
-        print('Partial Total Questions:', total )
+        print('Partial Total Questions:', total)
         print('Partial Accuracy:', (total-incorrect)/total * 100)
         print('Partial Time:', partial_end - start)
-    
+
     end = time.time()
 
     print('Correct Answers:', total-incorrect)
-    print('Total Questions:', total )
+    print('Total Questions:', total)
     print('Accuracy:', (total-incorrect)/total * 100)
     print('Time:', end - start)
 
