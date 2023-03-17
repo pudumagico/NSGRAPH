@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import time
@@ -11,12 +12,13 @@ from parse_background_knowledge import fill_background_knowledge, gt_data
 
 reader = easyocr.Reader(['en'])
 
-USE_GT = False
-USE_OCR_GT = False
-USE_OGR_GT = False
 
-def main():
-    data_filepath = sys.argv[1]
+def main(fp, gt, ocrgt, ogrgt):
+    data_filepath = fp
+
+    USE_GT = gt
+    USE_OCR_GT = ocrgt
+    USE_OGR_GT = ogrgt
 
     yaml_file = [f for f in os.listdir(data_filepath) if f.endswith('.yaml')]
     if len(yaml_file) != 1:
@@ -55,12 +57,13 @@ def main():
                 else:
                     nodes, edges = parse_graph(os.path.abspath(
                         data_filepath) + '/' + graph, name_dict)
-                
-            
+
                 nodes, edges, lines = fill_background_knowledge(os.path.abspath(
                     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
-            
+
             except:
+                total += 1
+                incorrect += 1
                 print('EXCEPTION', graph)
                 continue
 
@@ -131,5 +134,18 @@ def main():
     print('Accuracy:', (total-incorrect)/total * 100)
     print('Time:', end - start)
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-fp', '--folder_path', type=str,
+                        help='Path to folder containing graph images and a single .yaml file', required=True)
+    parser.add_argument('-fgt', '--full_ground_truth', type=bool,
+                        help='Use full ground truth.', default=False)
+    parser.add_argument('-ocrgt', '--ocr_ground_truth', type=bool,
+                        help='Use OCR ground truth (labels)', default=False)
+    parser.add_argument('-ogrgt', '--ogr_ground_truth', type=bool,
+                        help='Use OGR ground truth (nodes and edges)', default=False)
+    args = parser.parse_args()
+
+    main(args.folder_path, args.full_ground_truth,
+         args.ocr_ground_truth, args.ogr_ground_truth)

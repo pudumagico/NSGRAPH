@@ -87,11 +87,15 @@ if __name__ == "__main__":
 						graph.generate()
 						g = graph.graph_spec
 						# pprint.pprint(g.__dict__)
-						# pprint.pprint(lg.gnx.nodes())
-						# pprint.pprint(lg.gnx.edges())
-						
-						# networkx.draw(lg.gnx, with_labels=True)
-						# # plt.savefig('plotgraph.png', dpi=300, bbox_inches='tight')
+						# pprint.pprint(g.gnx.nodes())
+						# pprint.pprint(g.gnx.edges())
+						is_planar = nx.is_planar(g.gnx)
+						print(is_planar, g.id)
+						# if not is_planar:
+						# 	print('not planar')
+						# 	print(g.id)
+						# networkx.draw(g.gnx, with_labels=False)
+						# plt.savefig('plotgraph.png', dpi=300, bbox_inches='tight')
 						# plt.show()
 
 						# exit()

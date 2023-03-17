@@ -17,6 +17,9 @@ def find_closest_name(node, name_dict):
         else:
             if distance.euclidean([node[0], node[1]], name_dict[name]) < distance.euclidean([node[0], node[1]], name_dict[selected_name]):
                 selected_name = name
+    if selected_name:
+        del name_dict[selected_name]
+        
     return selected_name
 
 
