@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 import time
+from pprint import pprint
 
 import easyocr
 import clingo
@@ -35,7 +36,7 @@ def main(fp, gt, ocrgt, ogrgt):
 
     for graph in png_files:
 
-        f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
+        f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
@@ -49,6 +50,7 @@ def main(fp, gt, ocrgt, ogrgt):
                 else:
                     name_dict = parse_labels(os.path.abspath(
                         data_filepath) + '/' + graph, reader)
+                    pprint(name_dict)
 
                 if USE_OGR_GT:
                     nodes, edges = gt_graph(os.path.abspath(
@@ -56,8 +58,10 @@ def main(fp, gt, ocrgt, ogrgt):
                 else:
                     nodes, edges = parse_graph(os.path.abspath(
                         data_filepath) + '/' + graph, name_dict)
+                    
                 
                 nodes, edges, lines = aspify(nodes, edges)
+                
 
             except:
                 total += 1

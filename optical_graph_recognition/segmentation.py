@@ -47,6 +47,8 @@ def segment(source: np.ndarray, preprocessed: np.ndarray, mode: Mode) \
 
     # remove edges
     edgeless, edge_thickness = remove_edges(filled)
+    # cv.imshow('', edgeless)
+    # cv.waitKey(0)
 
     # detect vertices
     if mode == Mode.PRINTED:

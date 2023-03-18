@@ -89,8 +89,8 @@ class GraphGenerator(object):
 		self.args = args
 
 		self.stats = {
-			"lines": 6,
-			"stations_per_line": 8,
+			"lines": 8,
+			"stations_per_line": 10,
 			"map_radius": 50,
 			"min_station_dist": 5,
 			"node_size": 10,
@@ -98,15 +98,15 @@ class GraphGenerator(object):
 		}
 
 		if args.tiny:
-			self.stats["lines"] = 2
-			self.stats["stations_per_line"] = 8
+			self.stats["lines"] = 3
+			self.stats["stations_per_line"] = 6
 			# self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
 			# self.stats["node_size"] = 40
 			# self.stats["label_size"] = 10
 
 		elif args.small:
-			self.stats["lines"] = 4
+			self.stats["lines"] = 5
 			self.stats["stations_per_line"] = 8
 			# self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
@@ -293,6 +293,7 @@ class GraphGenerator(object):
 		self.graph_spec = GraphSpec(
 			nodes, edges, lines
 		)
+		print(len(nodes), len(edges), len(lines))
 
 	def assert_data_valid(self):
 		if self.args.int_names:
@@ -340,14 +341,14 @@ class GraphGenerator(object):
 			ts = [i.p["name"] for i in stations]
 			ls = line.p["stroke"]
 			c = 'tab:'+line.p["color"]
-			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=2, markersize=20)
+			ax.plot(xs, ys, color=c, marker='s', ls=ls, lw=2, markersize=13)
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
-			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=10)
+			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=13)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0]+0.8, i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+1, i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')

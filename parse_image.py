@@ -23,6 +23,7 @@ colors_rgb = {
     'pink': (255, 157, 167),
     'olive': (237, 201, 72),
     'cyan': (118, 183, 178),
+    'gray': (127, 127, 127),
 }
 
 rgb_colors = {v: k for k, v in colors_rgb.items()}
@@ -75,7 +76,7 @@ def parse_graph(file_path, name_dict):
         nodes.append(node)
         edges.append(element.adjacency_list)
 
-    print(len(graph))
+    print('nodes detected', len(graph))
 
     for node in nodes:
         name = find_closest_name(node, name_dict)
@@ -90,7 +91,7 @@ def parse_labels(file_path, reader):
         x_center = (name[0][0][0] + name[0][1][0])/2
         y_center = (name[0][0][1] + name[0][2][1])/2
         name_dict[name[1]] = [x_center, y_center]
-    print(name_dict, len(name_dict))
+    print('labels detected', len(name_dict))
     return name_dict
 
 def gt_labels(file_path, graph_id, map_radius = 4):
