@@ -11,6 +11,7 @@ from parse_image import parse_labels, parse_graph, gt_labels, gt_graph
 from parse_question import parse_questions
 from parse_background_knowledge import fill_background_knowledge, gt_data, aspify
 
+# reader = easyocr.Reader(['en'], detect_network = 'dbnet18')
 reader = easyocr.Reader(['en'])
 
 def main(fp, gt, ocrgt, ogrgt):
@@ -36,38 +37,37 @@ def main(fp, gt, ocrgt, ogrgt):
 
     for graph in png_files:
 
+        print(graph)
         f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
-            try:
-                if USE_OCR_GT:
-                    name_dict = gt_labels(os.path.abspath(
-                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+            # try:
+            if USE_OCR_GT:
+                name_dict = gt_labels(os.path.abspath(
+                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
-                else:
-                    name_dict = parse_labels(os.path.abspath(
-                        data_filepath) + '/' + graph, reader)
-                    pprint(name_dict)
+            else:
+                name_dict = parse_labels(os.path.abspath(
+                    data_filepath) + '/' + graph, reader)
 
-                if USE_OGR_GT:
-                    nodes, edges = gt_graph(os.path.abspath(
-                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
-                else:
-                    nodes, edges = parse_graph(os.path.abspath(
-                        data_filepath) + '/' + graph, name_dict)
-                    
+            if USE_OGR_GT:
+                nodes, edges = gt_graph(os.path.abspath(
+                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
+            else:
+                nodes, edges = parse_graph(os.path.abspath(
+                    data_filepath) + '/' + graph, name_dict)
                 
-                nodes, edges, lines = aspify(nodes, edges)
-                
-
-            except:
-                total += 1
-                incorrect += 1
-                print('EXCEPTION', graph)
-                continue
+            
+            nodes, edges, lines = aspify(nodes, edges)
+            
+            # except:
+            #     total += 1
+            #     incorrect += 1
+            #     print('EXCEPTION', graph)
+            #     continue
 
         f.write(nodes)
         f.write(edges)
@@ -114,6 +114,7 @@ def main(fp, gt, ocrgt, ogrgt):
                 ans_found = True
 
             len_models = len(models)
+            print(len_models, current_ans)
             if not ans_found and str(len_models) == current_ans:
                 ans_found = True
 

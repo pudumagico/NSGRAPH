@@ -2,7 +2,13 @@
 %edge(s1,s2,color)
 %line(color)
 
+%preprocessing
+
+node(S1, C):- node(S1, gray), edge(S1,S2,C).
+node(S2, C):- node(S2, gray), edge(S1,S2,C).
+
 hasNodes(C,N) :- line(C), node(N,C).
+
 e(S1,S2) :- edge(S1,S2,C).
 e(S2,S1) :- e(S1,S2).
 
@@ -11,7 +17,6 @@ sp((N, N'))  :- shortestPath(T), station(T-1,N), station(T-1,N'), N<N'.
 path((N, N'),A,B)             :- selected((N, N'),A,B).
 path((N, N'),X,Z)             :- path((N, N'),X,Y), path((N, N'),Y,Z).
 :- sp((N, N')), not path((N, N'), N, N').
-
 cost((N, N'), C) :- C = #count { X,Y : selected((N, N'),X,Y) }, sp((N, N')).
 #minimize { C,N,N' : cost((N, N'), C) }.
 
@@ -19,23 +24,21 @@ hops(N,0)       :- withinHops(T, X), station(T-1,N).
 hops(N,1)       :- not hops(N,0), hops(S,0), e(S,N).
 hops(N,2)       :- not hops(N,1), hops(S,1), e(S,N).
 
-minHops(N,V) :- V = #min{ X: hops(N,X) }, node(N,C), withinHops(_,_).
+minHops(N,V) :- V = #min{ X: hops(N,X) }, node(N,_), withinHops(_,_).
 countedWithinHops(T+1, C-1)     :-    withinHops(T, X), 
                                     C = #count{N,V: minHops(N,V), V <= X}.
 
 countedNodes(T+1, C-1)        :- countNodesBetween(T), sp((N, N')), cost((N,N'), C).
-countedNodes(T+1, C-1)        :- countNodesBetween(T), spa((N, N'), _), cost((N,N'), C).
 
 p((N,N'))   :- paths(T), station(T-1,N), station(T-1,N'), N<N'.
 
 sp((N,N))   :- cycle(T), station(T-1,N).
 cycleAns(T+1,true)  :- cycle(T), path((N,N), N,N).
 
-sp((N,N'))  :- adjacent(T), station(T-1,N), station(T-1,N'), N<N'.
-adjacentAns(T+1, true)  :- adjacent(T), cost(_,C), C=1.
+% sp((N,N'))  :- adjacent(T), station(T-1,N), station(T-1,N'), N<N'.
+adjacentAns(T+1, true)  :- adjacent(T), station(T-1,N), station(T-1,N'), N<N', e(N,N').
 adjacentAns(T+1, false) :- adjacent(T), not adjacentAns(T+1, true).
 
-adjacentArchAns(T+1,N') :- adjacentArch(T, X), station(T-1,N), e(N,N').
 adjacentToAns(T+1,X)    :- adjacentTo(T), station(T-1,N), station(T-1,N'), N<N', e(N,X), e(N',X).
 
 start(S1)   :- p((S1,S2)).
@@ -60,7 +63,7 @@ commonStationAns(T+1, true)     :- commonStation(T), cost((N,N'), C), C = 2.
 commonStationAns(T+1, false)    :- commonStation(T), not commonStationAns(T+1, true).
 
 lineOnAns(T+1,LN)   :- linesOnNames(T), station(T-1,N), hasNodes(LN,N).
-lineOnAns(T+1,C)    :- linesOnCount(T), station(T-1,N), C=#count{LNAME : hasNodes(LNAME,N)}.
+lineOnAns(T+1,C)    :- linesOnCount(T), station(T-1,N), C=#count{LNAME : hasNodes(LNAME,N), LNAME!=gray}.
 
 existAns(T+1,true)  :- exist(T), station(T-1,N), node(N,C).
 existAns(T+1,false) :- exist(T), not existAns(T+1,true).

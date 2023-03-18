@@ -89,8 +89,8 @@ if __name__ == "__main__":
 						# pprint.pprint(g.__dict__)
 						# pprint.pprint(g.gnx.nodes())
 						# pprint.pprint(g.gnx.edges())
-						is_planar = nx.is_planar(g.gnx)
-						print(is_planar, g.id)
+						# is_planar = nx.is_planar(g.gnx)
+						# print(is_planar, g.id)
 						# if not is_planar:
 						# 	print('not planar')
 						# 	print(g.id)
@@ -117,7 +117,10 @@ if __name__ == "__main__":
 								f_try[form.type_string] += 1
 								
 								logger.debug(f"Generating question '{form.english}'")
-								q, a = form.generate(g, args)
+								try:
+									q, a = form.generate(g, args)
+								except:
+									continue
 
 								f_success[form.type_string] += 1
 								i += 1
@@ -133,17 +136,17 @@ if __name__ == "__main__":
 								else:
 									yield DocumentSpec(g,q,a).stripped()
 
-							if attempt > len(question_forms) * 3:
-								raise Exception(f"Could not find form that matches {args.type_prefix}")
+							# if attempt > len(question_forms) * 3:
+							# 	raise Exception(f"Could not find form that matches {args.type_prefix}")
 							
 					except Exception as ex:
 						logger.debug(f"Exception {ex} whilst trying to generate GQA")
 
-						# ValueError is deemed to mean "should not generate" and not a bug in the underlying code
-						if not isinstance(ex, ValueError):
-							fail += 1
-							if fail >= max(total_gqa / 3, len(question_forms)):
-								raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
+					# 	# ValueError is deemed to mean "should not generate" and not a bug in the underlying code
+					# 	if not isinstance(ex, ValueError):
+					# 		fail += 1
+					# 		if fail >= max(total_gqa / 3, len(question_forms)):
+					# 			raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
 							
 
 		yaml.dump_all(specs(), file, explicit_start=True)

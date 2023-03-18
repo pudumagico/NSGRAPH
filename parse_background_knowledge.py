@@ -1,7 +1,7 @@
 from platform import architecture
 import sys
 import yaml
-import yaml
+import re
 
 from difflib import SequenceMatcher
 
@@ -144,8 +144,9 @@ def aspify(nodes, edges):
     asp_nodes = ''
 
     for node in nodes:
+        name = re.sub('\W+','', node[3]).lower()
         asp_node = vqa_node_pred_template.format(
-            name=node[3].lower(), color=node[2])
+            name=name, color=node[2])
         asp_nodes += asp_node
 
     asp_edges = ''
@@ -154,8 +155,11 @@ def aspify(nodes, edges):
         station = nodes[i][3]
         color = nodes[i][2]
         for edge in node_edges:
+            s1 = re.sub('\W+','', station).lower()
+            s2 = re.sub('\W+','', nodes[edge][3]).lower()
+
             asp_edge = vqa_edge_pred_template.format(
-                station1=station.lower(), station2=nodes[edge][3].lower(), color=color)
+                station1=s1, station2=s2, color=color)
             asp_edges += asp_edge
 
         asp_line = vqa_line_pred_template.format(color=color)

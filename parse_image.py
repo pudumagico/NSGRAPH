@@ -26,6 +26,7 @@ colors_rgb = {
     'gray': (127, 127, 127),
 }
 
+PLACEHOLDER_NAME = 'p'
 rgb_colors = {v: k for k, v in colors_rgb.items()}
 
 def closest_color(colors,color):
@@ -48,6 +49,10 @@ def find_closest_name(node, name_dict):
                 selected_name = name
     if selected_name:
         del name_dict[selected_name]
+    else:
+        global PLACEHOLDER_NAME
+        selected_name = str(PLACEHOLDER_NAME)
+        PLACEHOLDER_NAME+='p'
         
     return selected_name
 
@@ -64,6 +69,7 @@ def parse_graph(file_path, name_dict):
     graph = postprocess(vertices_list, is_rotated)
     nodes = []
     edges = []
+    total_edges = 0
     for element in graph:
         color = closest_color(colors=list(rgb_colors.keys()), color= element.color[::-1])
         # print(tuple(color[0]))
@@ -75,8 +81,10 @@ def parse_graph(file_path, name_dict):
         node = [element.x, element.y, color]
         nodes.append(node)
         edges.append(element.adjacency_list)
+        total_edges+=len(element.adjacency_list)
 
     print('nodes detected', len(graph))
+    print('edges detected', total_edges/2)
 
     for node in nodes:
         name = find_closest_name(node, name_dict)
@@ -88,13 +96,13 @@ def parse_labels(file_path, reader):
     names = reader.readtext(file_path)
     name_dict = {}
     for name in names:
-        x_center = (name[0][0][0] + name[0][1][0])/2
-        y_center = (name[0][0][1] + name[0][2][1])/2
+        x_center = name[0][0][0]
+        y_center = name[0][0][1]        
         name_dict[name[1]] = [x_center, y_center]
     print('labels detected', len(name_dict))
     return name_dict
 
-def gt_labels(file_path, graph_id, map_radius = 4):
+def gt_labels(file_path, graph_id, map_radius = 50):
     stream = open(file_path, "r")
     all_info = yaml.load_all(stream, yaml.FullLoader)
     incumbent_info = None
@@ -138,11 +146,13 @@ def gt_graph(file_path, graph_id, name_dict, map_radius = 50):
         adjacency_list = []
         for bkg_info_edge in incumbent_info['graph']['edges']:
             if bkg_info_node['name'] == bkg_info_edge['station1_name']:
+                color = bkg_info_edge['line_color']
                 adjacency_list.append(node_index_dict[bkg_info_edge['station2_name']])
             elif bkg_info_node['name'] == bkg_info_edge['station2_name']:
+                color = bkg_info_edge['line_color']
                 adjacency_list.append(node_index_dict[bkg_info_edge['station1_name']])
 
-        node = [x, y, 0]
+        node = [x, y, color]
         nodes.append(node)
         edges.append(list(set(adjacency_list)))
 

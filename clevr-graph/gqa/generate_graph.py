@@ -89,7 +89,7 @@ class GraphGenerator(object):
 		self.args = args
 
 		self.stats = {
-			"lines": 8,
+			"lines": 5,
 			"stations_per_line": 10,
 			"map_radius": 50,
 			"min_station_dist": 5,
@@ -106,7 +106,7 @@ class GraphGenerator(object):
 			# self.stats["label_size"] = 10
 
 		elif args.small:
-			self.stats["lines"] = 5
+			self.stats["lines"] = 4
 			self.stats["stations_per_line"] = 8
 			# self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
@@ -316,6 +316,15 @@ class GraphGenerator(object):
 
 		self.assert_data_valid()
 
+		global LineProperties
+
+		LineProperties = {
+			"has_aircon": [True, False],
+			"color": ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'olive', 'cyan'],
+			# "stroke": ["solid" , "dashed", "dashdot", "dotted"],
+			"stroke": ["solid"],
+			"built": ["50s", "60s", "70s", "80s", "90s", "00s", "recent"],
+		}
 		# For chaining
 		return self
 
@@ -329,7 +338,7 @@ class GraphGenerator(object):
 			pass
 
 		fig, ax = plt.subplots(figsize=(10, 10))
-
+		fig.tight_layout()
 		lines_per_station = Counter()
 		for line, stations in self.line_stations.items():
 			for station in stations:
@@ -348,7 +357,7 @@ class GraphGenerator(object):
 			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=13)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0]+1, i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+1.2, i.pt[1]-0.5), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')

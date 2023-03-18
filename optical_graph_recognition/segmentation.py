@@ -319,14 +319,13 @@ def find_vertices(source: np.ndarray, preprocessed: np.ndarray, edgeless: np.nda
         if hierarchy[0][i][3] == -1:  # outer contours
             cnt = contours[i]
             x, y, w, h = cv.boundingRect(cnt)
-            if 1.0 / round_ratio <= h / w <= round_ratio:  # circular enough contours
+            if 1:  # circular enough contours
                 (x, y), r = cv.minEnclosingCircle(cnt)
                 x, y, r = (int(x), int(y), int(r * 1.05))
 
                 fill_ratio = circle_fill_ratio(edgeless, x, y, r)
 
-                if fill_ratio >= min_fill \
-                        and image_area * VERTEX_AREA_UPPER >= cv.contourArea(cnt) >= image_area * VERTEX_AREA_LOWER:
+                if 1:
                     # determining vertex color
                     is_filled, color = vertex_color_fill(cv.medianBlur(preprocessed, 5), source, x, y, r,
                                                          COLOR_R_FACTOR, COLOR_THRESHOLD)
