@@ -293,7 +293,6 @@ class GraphGenerator(object):
 		self.graph_spec = GraphSpec(
 			nodes, edges, lines
 		)
-		print(len(nodes), len(edges), len(lines))
 
 	def assert_data_valid(self):
 		if self.args.int_names:

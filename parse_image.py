@@ -72,19 +72,11 @@ def parse_graph(file_path, name_dict):
     total_edges = 0
     for element in graph:
         color = closest_color(colors=list(rgb_colors.keys()), color= element.color[::-1])
-        # print(tuple(color[0]))
         color = rgb_colors[tuple(color[0])]
-        # print(color)
-        # print(element.__dict__)
-        # actual_name, closest_name = get_colour_name(element.color[::-1])
-        # print("Actual colour name:", actual_name, ", closest colour name:", closest_name)
         node = [element.x, element.y, color]
         nodes.append(node)
         edges.append(element.adjacency_list)
         total_edges+=len(element.adjacency_list)
-
-    print('nodes detected', len(graph))
-    print('edges detected', total_edges/2)
 
     for node in nodes:
         name = find_closest_name(node, name_dict)
@@ -99,7 +91,6 @@ def parse_labels(file_path, reader):
         x_center = name[0][0][0]
         y_center = name[0][0][1]        
         name_dict[name[1]] = [x_center, y_center]
-    print('labels detected', len(name_dict))
     return name_dict
 
 def gt_labels(file_path, graph_id, map_radius = 50):

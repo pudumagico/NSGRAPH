@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 import time
-from pprint import pprint
 
 import easyocr
 import clingo
@@ -36,38 +35,36 @@ def main(fp, gt, ocrgt, ogrgt):
     start = time.time()
 
     for graph in png_files:
-
-        print(graph)
         f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
         else:
-            # try:
-            if USE_OCR_GT:
-                name_dict = gt_labels(os.path.abspath(
-                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+            try:
+                if USE_OCR_GT:
+                    name_dict = gt_labels(os.path.abspath(
+                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
-            else:
-                name_dict = parse_labels(os.path.abspath(
-                    data_filepath) + '/' + graph, reader)
+                else:
+                    name_dict = parse_labels(os.path.abspath(
+                        data_filepath) + '/' + graph, reader)
 
-            if USE_OGR_GT:
-                nodes, edges = gt_graph(os.path.abspath(
-                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
-            else:
-                nodes, edges = parse_graph(os.path.abspath(
-                    data_filepath) + '/' + graph, name_dict)
+                if USE_OGR_GT:
+                    nodes, edges = gt_graph(os.path.abspath(
+                        data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
+                else:
+                    nodes, edges = parse_graph(os.path.abspath(
+                        data_filepath) + '/' + graph, name_dict)
+                    
                 
+                nodes, edges, lines = aspify(nodes, edges)
             
-            nodes, edges, lines = aspify(nodes, edges)
-            
-            # except:
-            #     total += 1
-            #     incorrect += 1
-            #     print('EXCEPTION', graph)
-            #     continue
+            except:
+                total += 1
+                incorrect += 1
+                print('EXCEPTION', graph)
+                continue
 
         f.write(nodes)
         f.write(edges)
@@ -114,7 +111,6 @@ def main(fp, gt, ocrgt, ogrgt):
                 ans_found = True
 
             len_models = len(models)
-            print(len_models, current_ans)
             if not ans_found and str(len_models) == current_ans:
                 ans_found = True
 
@@ -123,20 +119,15 @@ def main(fp, gt, ocrgt, ogrgt):
 
             if not ans_found:
                 incorrect += 1
-            print(i,questions[i])
-            print(i,current_ans)
-            for m in models:
-                print(m.symbols(shown=True))
-            print(ans_found)
-            print('--------------------------------')
-            
+
             total += 1
 
-        # partial_end = time.time()
-        # print('Partial Correct Answers:', total-incorrect)
-        # print('Partial Total Questions:', total)
-        # print('Partial Accuracy:', (total-incorrect)/total * 100)
-        # print('Partial Time:', partial_end - start)
+        if total%50 == 0:
+            partial_end = time.time()
+            print('Partial Correct Answers:', total-incorrect)
+            print('Partial Total Questions:', total)
+            print('Partial Accuracy:', (total-incorrect)/total * 100)
+            print('Partial Time:', partial_end - start)
 
     end = time.time()
 

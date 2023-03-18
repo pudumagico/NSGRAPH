@@ -86,20 +86,6 @@ if __name__ == "__main__":
 						graph = GraphGenerator(args)
 						graph.generate()
 						g = graph.graph_spec
-						# pprint.pprint(g.__dict__)
-						# pprint.pprint(g.gnx.nodes())
-						# pprint.pprint(g.gnx.edges())
-						# is_planar = nx.is_planar(g.gnx)
-						# print(is_planar, g.id)
-						# if not is_planar:
-						# 	print('not planar')
-						# 	print(g.id)
-						# networkx.draw(g.gnx, with_labels=False)
-						# plt.savefig('plotgraph.png', dpi=300, bbox_inches='tight')
-						# plt.show()
-
-						# exit()
-						# g = lg
 						logger.debug("Generated graph")
 
 						if len(g.nodes) == 0 or len(g.edges) == 0:
@@ -155,7 +141,6 @@ if __name__ == "__main__":
 		sum = 0
 		for q_type in f_success:
 			sum += f_success[q_type]
-		print(sum)
 		# for i in f_try:
 		# 	if i in f_success: 
 		# 		if f_success[i] < f_try[i]:
