@@ -70,8 +70,8 @@ question_forms = [
     re.compile("Which ([a-zA-Z]+) station is adjacent to ([a-zA-Z]+)\?"),
     re.compile(
         "Are ([a-zA-Z]+) and ([a-zA-Z]+) connected by the same station\?"),
-    re.compile("Is there a station called ([a-zA-Z]+)\?"),
-    re.compile("Is there a station called ([a-zA-Z]+)\?"),
+    re.compile("Is there a station called ([a-zA-Z0-9]+)\?"),
+    re.compile("Is there a station called ([a-zA-Z0-9]+)\?"),
     re.compile("Which lines is ([a-zA-Z]+) on\?"),
     re.compile("How many lines is ([a-zA-Z]+) on\?"),
     re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) on the same line\?"),

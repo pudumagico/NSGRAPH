@@ -90,7 +90,7 @@ class GraphGenerator(object):
 
 		self.stats = {
 			"lines": 6,
-			"stations_per_line": 6,
+			"stations_per_line": 8,
 			"map_radius": 50,
 			"min_station_dist": 5,
 			"node_size": 10,
@@ -99,7 +99,7 @@ class GraphGenerator(object):
 
 		if args.tiny:
 			self.stats["lines"] = 2
-			self.stats["stations_per_line"] = 2
+			self.stats["stations_per_line"] = 8
 			# self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
 			# self.stats["node_size"] = 40
@@ -107,7 +107,7 @@ class GraphGenerator(object):
 
 		elif args.small:
 			self.stats["lines"] = 4
-			self.stats["stations_per_line"] = 4
+			self.stats["stations_per_line"] = 8
 			# self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
 			# self.stats["node_size"] = 40
@@ -115,14 +115,17 @@ class GraphGenerator(object):
 
 
 	def gen_a(self, Clz, prop_dict):
-		return Clz({
+		x = {
 			k : random.choice(prop_dict[k])
 			for k in prop_dict.keys()
-		})
+		}
+		if 'color' in x.keys():
+			LineProperties['color'].remove(x['color'])
+		return Clz(x)
 
 	def gen_line(self):
 		l = self.gen_a(GeneratedLine, LineProperties)
-		name = l.p["color"] + " " + gibberish.generate_word(1)
+		name = l.p["color"]
 		l.p["name"] = name.title()
 		return l
 
@@ -315,9 +318,6 @@ class GraphGenerator(object):
 		# For chaining
 		return self
 
-	
-	
-
 	def draw(self, filename="./graph.png"):
 
 		try:
@@ -340,14 +340,14 @@ class GraphGenerator(object):
 			ts = [i.p["name"] for i in stations]
 			ls = line.p["stroke"]
 			c = 'tab:'+line.p["color"]
-			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=4, markersize=30)
+			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=2, markersize=20)
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
 			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=10)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0], i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+0.8, i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')

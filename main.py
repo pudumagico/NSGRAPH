@@ -8,10 +8,9 @@ import clingo
 
 from parse_image import parse_labels, parse_graph, gt_labels, gt_graph
 from parse_question import parse_questions
-from parse_background_knowledge import fill_background_knowledge, gt_data
+from parse_background_knowledge import fill_background_knowledge, gt_data, aspify
 
 reader = easyocr.Reader(['en'])
-
 
 def main(fp, gt, ocrgt, ogrgt):
     data_filepath = fp
@@ -28,7 +27,7 @@ def main(fp, gt, ocrgt, ogrgt):
 
     png_files = [f for f in os.listdir(data_filepath) if f.endswith('.png')]
 
-    theory = open('theory.lp', "r").read()
+    theory = open('vqa_theory.lp', "r").read()
     total = 0
     incorrect = 0
 
@@ -57,9 +56,8 @@ def main(fp, gt, ocrgt, ogrgt):
                 else:
                     nodes, edges = parse_graph(os.path.abspath(
                         data_filepath) + '/' + graph, name_dict)
-
-                # nodes, edges, lines = fill_background_knowledge(os.path.abspath(
-                #     data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
+                
+                nodes, edges, lines = aspify(nodes, edges)
 
             except:
                 total += 1
@@ -74,6 +72,7 @@ def main(fp, gt, ocrgt, ogrgt):
 
         questions, questions_nl, answers = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+            
 
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
@@ -94,6 +93,7 @@ def main(fp, gt, ocrgt, ogrgt):
             else:
                 current_ans = str(answers[i]).replace(
                     ' ', '').replace('-', '').lower()
+
 
             ans_found = False
             model_ans = []
@@ -118,14 +118,20 @@ def main(fp, gt, ocrgt, ogrgt):
 
             if not ans_found:
                 incorrect += 1
-
+            print(i,questions[i])
+            print(i,current_ans)
+            for m in models:
+                print(m.symbols(shown=True))
+            print(ans_found)
+            print('--------------------------------')
+            
             total += 1
 
-        partial_end = time.time()
-        print('Partial Correct Answers:', total-incorrect)
-        print('Partial Total Questions:', total)
-        print('Partial Accuracy:', (total-incorrect)/total * 100)
-        print('Partial Time:', partial_end - start)
+        # partial_end = time.time()
+        # print('Partial Correct Answers:', total-incorrect)
+        # print('Partial Total Questions:', total)
+        # print('Partial Accuracy:', (total-incorrect)/total * 100)
+        # print('Partial Time:', partial_end - start)
 
     end = time.time()
 
