@@ -42,6 +42,7 @@ if __name__ == "__main__":
 	logger.info(f"Generating {total_gqa} (G,Q,A) tuples into {filename}")
 
 	os.makedirs("./data", exist_ok=True)
+	data_statistics = {'nodes': [], 'edges': [], 'lines': []}
 
 	def type_matches(form):
 
@@ -82,7 +83,6 @@ if __name__ == "__main__":
 				while i < total_gqa:
 					
 					try:
-						import pprint
 						graph = GraphGenerator(args)
 						graph.generate()
 						g = graph.graph_spec
@@ -91,6 +91,9 @@ if __name__ == "__main__":
 						if len(g.nodes) == 0 or len(g.edges) == 0:
 							raise ValueError("Empty graph was generated")
 
+						data_statistics["nodes"].append(len(g.nodes))
+						data_statistics["edges"].append(len(g.edges))
+						data_statistics["lines"].append(len(g.lines))
 
 						j = 0
 						attempt = 0
@@ -115,7 +118,13 @@ if __name__ == "__main__":
 
 								logger.debug(f"Question: '{q}', answer: '{a}'")
 								if args.draw:
-									graph.draw(os.path.join("data", f"{g.id}.png"))
+									coords = graph.draw(os.path.join("data", f"{g.id}.png"))
+									# for n in g.nodes:
+									# 	for c in coords:
+									# 		for i, x in enumerate(c[0]):
+									# 			if (g.nodes[n]['x'],g.nodes[n]['y'])==x:
+									# 				g.nodes[n]['pixel_coords_x'] = round(float(c[1][i][0]),2)
+									# 				g.nodes[n]['pixel_coords_y'] = round(float(c[1][i][1]),2)
 
 								if args.omit_graph:
 									yield DocumentSpec(None,q,a).stripped()
@@ -138,9 +147,9 @@ if __name__ == "__main__":
 		yaml.dump_all(specs(), file, explicit_start=True)
 
 		logger.info(f"GQA per question type: {f_success}")
-		sum = 0
-		for q_type in f_success:
-			sum += f_success[q_type]
+
+		for stat in data_statistics:
+			print(stat, sum(data_statistics[stat])/len(data_statistics[stat]))
 		# for i in f_try:
 		# 	if i in f_success: 
 		# 		if f_success[i] < f_try[i]:

@@ -105,8 +105,8 @@ def gt_labels(file_path, graph_id, map_radius = 50):
     gt_labels_dict = {}
 
     for bkg_info_node in incumbent_info['graph']['nodes']:
-        x = (bkg_info_node['x'] + map_radius) * 1000/(map_radius*2)
-        y = 1000 - (bkg_info_node['y'] + map_radius) * 1000/(map_radius*2)
+        x = bkg_info_node['pixel_coords_x']
+        y = bkg_info_node['pixel_coords_y']
         gt_labels_dict[bkg_info_node['name']] = [x,y]
 
     return gt_labels_dict
@@ -131,8 +131,8 @@ def gt_graph(file_path, graph_id, name_dict, map_radius = 50):
         node_index += 1
     
     for bkg_info_node in incumbent_info['graph']['nodes']:
-        x = (bkg_info_node['x'] + map_radius) * 1000/(map_radius*2)
-        y = 1000 - (bkg_info_node['y'] + map_radius) * 1000/(map_radius*2)
+        x = bkg_info_node['pixel_coords_x']
+        y = bkg_info_node['pixel_coords_y']
         
         adjacency_list = []
         for bkg_info_edge in incumbent_info['graph']['edges']:

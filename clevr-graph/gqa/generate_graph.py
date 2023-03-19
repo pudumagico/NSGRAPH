@@ -92,7 +92,7 @@ class GraphGenerator(object):
 			"lines": 5,
 			"stations_per_line": 10,
 			"map_radius": 50,
-			"min_station_dist": 5,
+			"min_station_dist": 3,
 			"node_size": 10,
 			"label_size": 10,
 		}
@@ -174,8 +174,8 @@ class GraphGenerator(object):
 			ys = []
 			
 			for i in range(4):
-				x = (random.random()*2-1) * self.stats["map_radius"]
-				y = (random.random()*2-1) * self.stats["map_radius"]
+				x = (random.random()) * self.stats["map_radius"]
+				y = (random.random()) * self.stats["map_radius"]
 				xs.append(x)
 				ys.append(y)
 
@@ -329,6 +329,9 @@ class GraphGenerator(object):
 
 	def draw(self, filename="./graph.png"):
 
+		# print(self.graph_spec.__dict__)
+		coord_list = []
+
 		try:
 			import matplotlib
 			matplotlib.use("Agg") # Work in terminal
@@ -337,7 +340,6 @@ class GraphGenerator(object):
 			pass
 
 		fig, ax = plt.subplots(figsize=(10, 10))
-		fig.tight_layout()
 		lines_per_station = Counter()
 		for line, stations in self.line_stations.items():
 			for station in stations:
@@ -349,18 +351,32 @@ class GraphGenerator(object):
 			ts = [i.p["name"] for i in stations]
 			ls = line.p["stroke"]
 			c = 'tab:'+line.p["color"]
-			ax.plot(xs, ys, color=c, marker='s', ls=ls, lw=2, markersize=13)
+			points, = ax.plot(xs, ys, color=c, marker='s', ls=ls, lw=2, markersize=13)
+	
+			x, y = points.get_data()
+			ax.get_xbound()
+			ax.get_ybound()
+			pixels = ax.transData.transform(np.vstack([x,y]).T)
+
+			x, y = pixels.T
+
+			width, height = fig.canvas.get_width_height()
+			y = height - y
+			coord_list.append([list(zip(xs,ys)),list(zip(x,y))])
+
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
 			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=13)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0]+1.2, i.pt[1]-0.5), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+1, i.pt[1]-0.5), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')
 			plt.savefig(file) 
+
+		return coord_list
 
 
 if __name__ == "__main__":
