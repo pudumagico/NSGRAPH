@@ -329,7 +329,6 @@ class GraphGenerator(object):
 
 	def draw(self, filename="./graph.png"):
 
-		# print(self.graph_spec.__dict__)
 		coord_list = []
 
 		try:
@@ -357,13 +356,13 @@ class GraphGenerator(object):
 			ax.get_xbound()
 			ax.get_ybound()
 			pixels = ax.transData.transform(np.vstack([x,y]).T)
-
 			x, y = pixels.T
-
 			width, height = fig.canvas.get_width_height()
 			y = height - y
-			coord_list.append([list(zip(xs,ys)),list(zip(x,y))])
+			coord_list += list(zip(ts,list(zip(x,y))))
 
+			# print(list(zip(x,y)), c, ts)
+			# print(list(zip(ts,list(zip(x,y)))))
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]

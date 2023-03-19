@@ -114,22 +114,31 @@ if __name__ == "__main__":
 								f_success[form.type_string] += 1
 								i += 1
 								j += 1
-								pbar.update(1)
 
 								logger.debug(f"Question: '{q}', answer: '{a}'")
 								if args.draw:
 									coords = graph.draw(os.path.join("data", f"{g.id}.png"))
-									# for n in g.nodes:
-									# 	for c in coords:
-									# 		for i, x in enumerate(c[0]):
-									# 			if (g.nodes[n]['x'],g.nodes[n]['y'])==x:
-									# 				g.nodes[n]['pixel_coords_x'] = round(float(c[1][i][0]),2)
-									# 				g.nodes[n]['pixel_coords_y'] = round(float(c[1][i][1]),2)
-
+									print(coords)
+									for n in g.nodes:
+										for station in coords:
+											# for station in colors:
+												# print(c)
+											# print(station[0])
+											# print(g.nodes[n]['name'])
+											# print(g.nodes[n]['name'], type(g.nodes[n]['name']))
+											if g.nodes[n]['name'] == station[0]:
+												print(g.nodes[n]['name'])
+												g.nodes[n]['pixel_coords_x'] = round(float(station[1][0]),2)
+												g.nodes[n]['pixel_coords_y'] = round(float(station[1][1]),2)
+											# for i, x in enumerate(c[0]):
+											# 	if (g.nodes[n]['x'],g.nodes[n]['y'])==x:
+											# 		break
+												
 								if args.omit_graph:
 									yield DocumentSpec(None,q,a).stripped()
 								else:
 									yield DocumentSpec(g,q,a).stripped()
+								pbar.update(1)
 
 							# if attempt > len(question_forms) * 3:
 							# 	raise Exception(f"Could not find form that matches {args.type_prefix}")
