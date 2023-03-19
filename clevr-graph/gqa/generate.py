@@ -118,7 +118,6 @@ if __name__ == "__main__":
 								logger.debug(f"Question: '{q}', answer: '{a}'")
 								if args.draw:
 									coords = graph.draw(os.path.join("data", f"{g.id}.png"))
-									print(coords)
 									for n in g.nodes:
 										for station in coords:
 											# for station in colors:
@@ -127,7 +126,6 @@ if __name__ == "__main__":
 											# print(g.nodes[n]['name'])
 											# print(g.nodes[n]['name'], type(g.nodes[n]['name']))
 											if g.nodes[n]['name'] == station[0]:
-												print(g.nodes[n]['name'])
 												g.nodes[n]['pixel_coords_x'] = round(float(station[1][0]),2)
 												g.nodes[n]['pixel_coords_y'] = round(float(station[1][1]),2)
 											# for i, x in enumerate(c[0]):
