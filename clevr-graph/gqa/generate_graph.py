@@ -90,16 +90,16 @@ class GraphGenerator(object):
 
 		self.stats = {
 			"lines": 5,
-			"stations_per_line": 10,
+			"stations_per_line": 8,
 			"map_radius": 50,
-			"min_station_dist": 3,
+			"min_station_dist": 2,
 			"node_size": 10,
 			"label_size": 10,
 		}
 
 		if args.tiny:
 			self.stats["lines"] = 3
-			self.stats["stations_per_line"] = 6
+			self.stats["stations_per_line"] = 4
 			# self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
 			# self.stats["node_size"] = 40
@@ -107,7 +107,7 @@ class GraphGenerator(object):
 
 		elif args.small:
 			self.stats["lines"] = 4
-			self.stats["stations_per_line"] = 8
+			self.stats["stations_per_line"] = 6
 			# self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
 			# self.stats["node_size"] = 40
@@ -369,7 +369,7 @@ class GraphGenerator(object):
 			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=13)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0]+1, i.pt[1]-0.5), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+0.6, i.pt[1]-0.35), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')

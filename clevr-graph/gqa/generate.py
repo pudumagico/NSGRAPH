@@ -95,6 +95,7 @@ if __name__ == "__main__":
 						data_statistics["edges"].append(len(g.edges))
 						data_statistics["lines"].append(len(g.lines))
 
+						i += 1
 						j = 0
 						attempt = 0
 						while j < args.questions_per_graph:
@@ -112,7 +113,6 @@ if __name__ == "__main__":
 									continue
 
 								f_success[form.type_string] += 1
-								i += 1
 								j += 1
 
 								logger.debug(f"Question: '{q}', answer: '{a}'")
