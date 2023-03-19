@@ -50,9 +50,7 @@ def main(fp, gt, ocrgt, ogrgt):
                     name_dict = parse_labels(os.path.abspath(
                         data_filepath) + '/' + graph, reader)
                 
-                print(name_dict)
-                exit()
-
+                # print(name_dict)
                 if USE_OGR_GT:
                     nodes, edges = gt_graph(os.path.abspath(
                         data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
