@@ -37,6 +37,9 @@ def main(fp, gt, ocrgt, ogrgt):
     for graph in png_files:
         f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
+        questions, questions_nl, answers = parse_questions(os.path.abspath(
+            data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+            
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
@@ -62,9 +65,8 @@ def main(fp, gt, ocrgt, ogrgt):
                 nodes, edges, lines = aspify(nodes, edges)
             
             except:
-                total += 1
-                incorrect += 1
-                print('EXCEPTION', graph)
+                total += len(questions)
+                incorrect += len(questions)
                 continue
 
         f.write(nodes)
@@ -72,9 +74,6 @@ def main(fp, gt, ocrgt, ogrgt):
         f.write(lines)
         f.close()
 
-        questions, questions_nl, answers = parse_questions(os.path.abspath(
-            data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
-            
 
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
@@ -95,7 +94,6 @@ def main(fp, gt, ocrgt, ogrgt):
             else:
                 current_ans = str(answers[i]).replace(
                     ' ', '').replace('-', '').lower()
-
 
             ans_found = False
             model_ans = []
@@ -123,7 +121,7 @@ def main(fp, gt, ocrgt, ogrgt):
 
             total += 1
 
-        if total%50 == 0:
+        if total % 50 == 0:
             partial_end = time.time()
             print('Partial Correct Answers:', total-incorrect)
             print('Partial Total Questions:', total)
