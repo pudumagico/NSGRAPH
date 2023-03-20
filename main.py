@@ -37,7 +37,7 @@ def main(fp, gt, ocrgt, ogrgt):
     for graph in png_files:
         f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
-        questions, questions_nl, answers = parse_questions(os.path.abspath(
+        questions, questions_nl, answers, args_list = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
             
         if USE_GT:
@@ -51,7 +51,7 @@ def main(fp, gt, ocrgt, ogrgt):
 
                 else:
                     name_dict = parse_labels(os.path.abspath(
-                        data_filepath) + '/' + graph, reader)
+                        data_filepath) + '/' + graph, reader, args_list)
                 
                 # print(name_dict)
                 if USE_OGR_GT:
@@ -67,7 +67,7 @@ def main(fp, gt, ocrgt, ogrgt):
             except:
                 total += len(questions)
                 incorrect += len(questions)
-                continue
+                continue            
 
         f.write(nodes)
         f.write(edges)

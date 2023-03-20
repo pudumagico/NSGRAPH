@@ -92,7 +92,7 @@ class GraphGenerator(object):
 			"lines": 5,
 			"stations_per_line": 8,
 			"map_radius": 50,
-			"min_station_dist": 4,
+			"min_station_dist": 3,
 			"node_size": 10,
 			"label_size": 10,
 		}

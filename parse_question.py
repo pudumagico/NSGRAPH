@@ -10,6 +10,7 @@ def parse_questions(yaml_filepath, graph_id):
         questions = []
         questions_nl = []
         answers = []
+        args_list = []
         for data in docs:
             if data['graph']['id'] == graph_id:
                 question_nl = data['question']['english']
@@ -24,10 +25,11 @@ def parse_questions(yaml_filepath, graph_id):
                         asp_question = question_form_asp[i].format(*args)
                         questions.append(asp_question)
                         questions_nl.append(question_nl)
+                        args_list.append(args)
                         break
                 
 
-    return questions, questions_nl, answers
+    return questions, questions_nl, answers, args_list
 
 
 question_forms = [

@@ -4,7 +4,6 @@ import webcolors
 import numpy as np
 from scipy.spatial import distance
 
-
 from optical_graph_recognition.preprocessing import preprocess
 from optical_graph_recognition.argsparser import parser, parse_argument
 from optical_graph_recognition.segmentation import segment
@@ -83,11 +82,16 @@ def parse_graph(file_path, name_dict):
         node.append(name)
     return nodes, edges
 
-def parse_labels(file_path, reader):
+def parse_labels(file_path, reader, args):
 
     names = reader.readtext(file_path)
     name_dict = {}
     for name in names:
+
+        # for arg in args:
+        #     if distance.hamming(name, arg) < 2:
+        #         name = arg
+
         x_center = name[0][0][0]
         y_center = name[0][0][1]        
         name_dict[name[1]] = [x_center, y_center]
