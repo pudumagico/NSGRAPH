@@ -42,6 +42,7 @@ if __name__ == "__main__":
 	logger.info(f"Generating {total_gqa} (G,Q,A) tuples into {filename}")
 
 	os.makedirs("./data", exist_ok=True)
+	data_statistics = {'nodes': [], 'edges': [], 'lines': []}
 
 	def type_matches(form):
 
@@ -82,30 +83,19 @@ if __name__ == "__main__":
 				while i < total_gqa:
 					
 					try:
-						import pprint
 						graph = GraphGenerator(args)
 						graph.generate()
 						g = graph.graph_spec
-						# pprint.pprint(g.__dict__)
-						# pprint.pprint(g.gnx.nodes())
-						# pprint.pprint(g.gnx.edges())
-						is_planar = nx.is_planar(g.gnx)
-						print(is_planar, g.id)
-						# if not is_planar:
-						# 	print('not planar')
-						# 	print(g.id)
-						# networkx.draw(g.gnx, with_labels=False)
-						# plt.savefig('plotgraph.png', dpi=300, bbox_inches='tight')
-						# plt.show()
-
-						# exit()
-						# g = lg
 						logger.debug("Generated graph")
 
 						if len(g.nodes) == 0 or len(g.edges) == 0:
 							raise ValueError("Empty graph was generated")
 
+						data_statistics["nodes"].append(len(g.nodes))
+						data_statistics["edges"].append(len(g.edges))
+						data_statistics["lines"].append(len(g.lines))
 
+						i += 1
 						j = 0
 						attempt = 0
 						while j < args.questions_per_graph:
@@ -117,42 +107,56 @@ if __name__ == "__main__":
 								f_try[form.type_string] += 1
 								
 								logger.debug(f"Generating question '{form.english}'")
-								q, a = form.generate(g, args)
+								try:
+									q, a = form.generate(g, args)
+								except:
+									continue
 
 								f_success[form.type_string] += 1
-								i += 1
 								j += 1
-								pbar.update(1)
 
 								logger.debug(f"Question: '{q}', answer: '{a}'")
 								if args.draw:
-									graph.draw(os.path.join("data", f"{g.id}.png"))
-
+									coords = graph.draw(os.path.join("data", f"{g.id}.png"))
+									for n in g.nodes:
+										for station in coords:
+											# for station in colors:
+												# print(c)
+											# print(station[0])
+											# print(g.nodes[n]['name'])
+											# print(g.nodes[n]['name'], type(g.nodes[n]['name']))
+											if g.nodes[n]['name'] == station[0]:
+												g.nodes[n]['pixel_coords_x'] = round(float(station[1][0]),2)
+												g.nodes[n]['pixel_coords_y'] = round(float(station[1][1]),2)
+											# for i, x in enumerate(c[0]):
+											# 	if (g.nodes[n]['x'],g.nodes[n]['y'])==x:
+											# 		break
+												
 								if args.omit_graph:
 									yield DocumentSpec(None,q,a).stripped()
 								else:
 									yield DocumentSpec(g,q,a).stripped()
+								pbar.update(1)
 
-							if attempt > len(question_forms) * 3:
-								raise Exception(f"Could not find form that matches {args.type_prefix}")
+							# if attempt > len(question_forms) * 3:
+							# 	raise Exception(f"Could not find form that matches {args.type_prefix}")
 							
 					except Exception as ex:
 						logger.debug(f"Exception {ex} whilst trying to generate GQA")
 
-						# ValueError is deemed to mean "should not generate" and not a bug in the underlying code
-						if not isinstance(ex, ValueError):
-							fail += 1
-							if fail >= max(total_gqa / 3, len(question_forms)):
-								raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
+					# 	# ValueError is deemed to mean "should not generate" and not a bug in the underlying code
+					# 	if not isinstance(ex, ValueError):
+					# 		fail += 1
+					# 		if fail >= max(total_gqa / 3, len(question_forms)):
+					# 			raise Exception(f"{ex} --- Too many exceptions whilst trying to generate GQA, stopping.")
 							
 
 		yaml.dump_all(specs(), file, explicit_start=True)
 
 		logger.info(f"GQA per question type: {f_success}")
-		sum = 0
-		for q_type in f_success:
-			sum += f_success[q_type]
-		print(sum)
+
+		for stat in data_statistics:
+			print(stat, sum(data_statistics[stat])/len(data_statistics[stat]))
 		# for i in f_try:
 		# 	if i in f_success: 
 		# 		if f_success[i] < f_try[i]:

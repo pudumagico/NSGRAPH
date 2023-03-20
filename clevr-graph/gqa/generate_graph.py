@@ -76,7 +76,6 @@ class GeneratedLine(GeneratedEntity):
 			"line_stroke": self.p["stroke"],
 		}
 
-
 def gen_n(base, noise = 0.2):
 	return base
 	return round(random.gauss(base, noise*base))
@@ -84,25 +83,23 @@ def gen_n(base, noise = 0.2):
 def add_noise(base, noise=0.05):
 	return base * (1 - noise + random.random() * noise*2)
 
-
 class GraphGenerator(object):
-
 	def __init__(self, args):
 
 		self.args = args
 
 		self.stats = {
-			"lines": 6,
-			"stations_per_line": 6,
+			"lines": 5,
+			"stations_per_line": 8,
 			"map_radius": 50,
-			"min_station_dist": 5,
+			"min_station_dist": 3,
 			"node_size": 10,
 			"label_size": 10,
 		}
 
 		if args.tiny:
-			self.stats["lines"] = 2
-			self.stats["stations_per_line"] = 2
+			self.stats["lines"] = 3
+			self.stats["stations_per_line"] = 4
 			# self.stats["map_radius"] = 3
 			# self.stats["min_station_dist"] = 1
 			# self.stats["node_size"] = 40
@@ -110,7 +107,7 @@ class GraphGenerator(object):
 
 		elif args.small:
 			self.stats["lines"] = 4
-			self.stats["stations_per_line"] = 4
+			self.stats["stations_per_line"] = 6
 			# self.stats["map_radius"] = 4
 			# self.stats["min_station_dist"] = 2
 			# self.stats["node_size"] = 40
@@ -118,14 +115,17 @@ class GraphGenerator(object):
 
 
 	def gen_a(self, Clz, prop_dict):
-		return Clz({
+		x = {
 			k : random.choice(prop_dict[k])
 			for k in prop_dict.keys()
-		})
+		}
+		if 'color' in x.keys():
+			LineProperties['color'].remove(x['color'])
+		return Clz(x)
 
 	def gen_line(self):
 		l = self.gen_a(GeneratedLine, LineProperties)
-		name = l.p["color"] + " " + gibberish.generate_word(1)
+		name = l.p["color"]
 		l.p["name"] = name.title()
 		return l
 
@@ -174,8 +174,8 @@ class GraphGenerator(object):
 			ys = []
 			
 			for i in range(4):
-				x = (random.random()*2-1) * self.stats["map_radius"]
-				y = (random.random()*2-1) * self.stats["map_radius"]
+				x = (random.random()) * self.stats["map_radius"]
+				y = (random.random()) * self.stats["map_radius"]
 				xs.append(x)
 				ys.append(y)
 
@@ -315,13 +315,21 @@ class GraphGenerator(object):
 
 		self.assert_data_valid()
 
+		global LineProperties
+
+		LineProperties = {
+			"has_aircon": [True, False],
+			"color": ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'olive', 'cyan'],
+			# "stroke": ["solid" , "dashed", "dashdot", "dotted"],
+			"stroke": ["solid"],
+			"built": ["50s", "60s", "70s", "80s", "90s", "00s", "recent"],
+		}
 		# For chaining
 		return self
 
-	
-	
-
 	def draw(self, filename="./graph.png"):
+
+		coord_list = []
 
 		try:
 			import matplotlib
@@ -331,7 +339,6 @@ class GraphGenerator(object):
 			pass
 
 		fig, ax = plt.subplots(figsize=(10, 10))
-
 		lines_per_station = Counter()
 		for line, stations in self.line_stations.items():
 			for station in stations:
@@ -343,18 +350,32 @@ class GraphGenerator(object):
 			ts = [i.p["name"] for i in stations]
 			ls = line.p["stroke"]
 			c = 'tab:'+line.p["color"]
-			ax.plot(xs, ys, color=c, marker='.', ls=ls, lw=4, markersize=30)
+			points, = ax.plot(xs, ys, color=c, marker='s', ls=ls, lw=2, markersize=13)
+	
+			x, y = points.get_data()
+			ax.get_xbound()
+			ax.get_ybound()
+			pixels = ax.transData.transform(np.vstack([x,y]).T)
+			x, y = pixels.T
+			width, height = fig.canvas.get_width_height()
+			y = height - y
+			coord_list += list(zip(ts,list(zip(x,y))))
+
+			# print(list(zip(x,y)), c, ts)
+			# print(list(zip(ts,list(zip(x,y)))))
 
 			inter_xs = [i.p["x"] for i in stations if lines_per_station[i] > 1]
 			inter_ys = [i.p["y"] for i in stations if lines_per_station[i] > 1]
-			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=10)
+			ax.plot(inter_xs, inter_ys, color='grey', marker='s', ls='', markersize=13)
 
 			for i in stations:
-				ax.annotate(i.p["name"], (i.pt[0], i.pt[1]), xycoords='data', annotation_clip=False, fontsize=10)
+				ax.annotate(i.p["name"], (i.pt[0]+0.6, i.pt[1]-0.35), xycoords='data', annotation_clip=False, fontsize=10)
 			
 		with open(filename, 'wb') as file:
 			plt.axis('off')
 			plt.savefig(file) 
+
+		return coord_list
 
 
 if __name__ == "__main__":

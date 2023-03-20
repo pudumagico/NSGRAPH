@@ -8,10 +8,10 @@ import clingo
 
 from parse_image import parse_labels, parse_graph, gt_labels, gt_graph
 from parse_question import parse_questions
-from parse_background_knowledge import fill_background_knowledge, gt_data
+from parse_background_knowledge import fill_background_knowledge, gt_data, aspify
 
+# reader = easyocr.Reader(['en'], detect_network = 'dbnet18')
 reader = easyocr.Reader(['en'])
-
 
 def main(fp, gt, ocrgt, ogrgt):
     data_filepath = fp
@@ -28,16 +28,18 @@ def main(fp, gt, ocrgt, ogrgt):
 
     png_files = [f for f in os.listdir(data_filepath) if f.endswith('.png')]
 
-    theory = open('theory.lp', "r").read()
+    theory = open('vqa_theory.lp', "r").read()
     total = 0
     incorrect = 0
 
     start = time.time()
 
     for graph in png_files:
+        f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
 
-        f = open('graph_encodings/{}.lp'.format(graph.strip('.png')), "w")
-
+        questions, questions_nl, answers, args_list = parse_questions(os.path.abspath(
+            data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
+            
         if USE_GT:
             nodes, edges, lines = gt_data(os.path.abspath(
                 data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
@@ -49,31 +51,29 @@ def main(fp, gt, ocrgt, ogrgt):
 
                 else:
                     name_dict = parse_labels(os.path.abspath(
-                        data_filepath) + '/' + graph, reader)
-
+                        data_filepath) + '/' + graph, reader, args_list)
+                
+                # print(name_dict)
                 if USE_OGR_GT:
                     nodes, edges = gt_graph(os.path.abspath(
                         data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
                 else:
                     nodes, edges = parse_graph(os.path.abspath(
                         data_filepath) + '/' + graph, name_dict)
-
-                nodes, edges, lines = fill_background_knowledge(os.path.abspath(
-                    data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), nodes, edges)
-
+                    
+                
+                nodes, edges, lines = aspify(nodes, edges)
+            
             except:
-                total += 1
-                incorrect += 1
-                print('EXCEPTION', graph)
-                continue
+                total += len(questions)
+                incorrect += len(questions)
+                continue            
 
         f.write(nodes)
         f.write(edges)
         f.write(lines)
         f.close()
 
-        questions, questions_nl, answers = parse_questions(os.path.abspath(
-            data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
 
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
@@ -121,11 +121,12 @@ def main(fp, gt, ocrgt, ogrgt):
 
             total += 1
 
-        partial_end = time.time()
-        print('Partial Correct Answers:', total-incorrect)
-        print('Partial Total Questions:', total)
-        print('Partial Accuracy:', (total-incorrect)/total * 100)
-        print('Partial Time:', partial_end - start)
+        if total % 50 == 0:
+            partial_end = time.time()
+            print('Partial Correct Answers:', total-incorrect)
+            print('Partial Total Questions:', total)
+            print('Partial Accuracy:', (total-incorrect)/total * 100)
+            print('Partial Time:', partial_end - start)
 
     end = time.time()
 

@@ -82,164 +82,164 @@ question_forms = [
 	# Station properties
 	# --------------------------------------------------------------------------
 
-	QuestionForm(
-		[Station], 
-		"How clean is {}?", 
-		(lambda s: Pick(s, "cleanliness")),
-		"StationPropertyCleanliness"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"How clean is {}?", 
+	# 	(lambda s: Pick(s, "cleanliness")),
+	# 	"StationPropertyCleanliness"),
 
-	QuestionForm(
-		[Station], 
-		"What is the cleanliness level of {} station?", 
-		(lambda s: Pick(s, "cleanliness")),
-		"StationPropertyCleanliness2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"What is the cleanliness level of {} station?", 
+	# 	(lambda s: Pick(s, "cleanliness")),
+	# 	"StationPropertyCleanliness2"),
 
-	QuestionForm(
-		[Station], 
-		"How big is {}?", 
-		(lambda s: Pick(s, "size")),
-		"StationPropertySize"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"How big is {}?", 
+	# 	(lambda s: Pick(s, "size")),
+	# 	"StationPropertySize"),
 
-	QuestionForm(
-		[Station], 
-		"What size is {}?", 
-		(lambda s: Pick(s, "size")),
-		"StationPropertySize2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"What size is {}?", 
+	# 	(lambda s: Pick(s, "size")),
+	# 	"StationPropertySize2"),
 
-	QuestionForm(
-		[Station], 
-		"What music plays at {}?", 
-		(lambda s: Pick(s, "music")),
-		"StationPropertyMusic"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"What music plays at {}?", 
+	# 	(lambda s: Pick(s, "music")),
+	# 	"StationPropertyMusic"),
 
-	QuestionForm(
-		[Station], 
-		"At {} what sort of music plays?", 
-		(lambda s: Pick(s, "music")),
-		"StationPropertyMusic2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"At {} what sort of music plays?", 
+	# 	(lambda s: Pick(s, "music")),
+	# 	"StationPropertyMusic2"),
 
 
-	QuestionForm(
-		[Station], 
-		"What architectural style is {}?", 
-		(lambda s: Pick(s, "architecture")),
-		"StationPropertyArchitecture"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"What architectural style is {}?", 
+	# 	(lambda s: Pick(s, "architecture")),
+	# 	"StationPropertyArchitecture"),
 
-	QuestionForm(
-		[Station], 
-		"Describe {} station's architectural style.", 
-		(lambda s: Pick(s, "architecture")),
-		"StationPropertyArchitecture2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"Describe {} station's architectural style.", 
+	# 	(lambda s: Pick(s, "architecture")),
+	# 	"StationPropertyArchitecture2"),
 
-	QuestionForm(
-		[Station], 
-		"Does {} have disabled access?", 
-		(lambda s: Pick(s, "disabled_access")),
-		"StationPropertyDisabledAccess"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"Does {} have disabled access?", 
+	# 	(lambda s: Pick(s, "disabled_access")),
+	# 	"StationPropertyDisabledAccess"),
 
-	QuestionForm(
-		[Station], 
-		"Is there disabled access at {}?", 
-		(lambda s: Pick(s, "disabled_access")),
-		"StationPropertyDisabledAccess2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"Is there disabled access at {}?", 
+	# 	(lambda s: Pick(s, "disabled_access")),
+	# 	"StationPropertyDisabledAccess2"),
 
-	QuestionForm(
-		[Station], 
-		"Does {} have rail connections?", 
-		(lambda s: Pick(s, "has_rail")),
-		"StationPropertyHasRail"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"Does {} have rail connections?", 
+	# 	(lambda s: Pick(s, "has_rail")),
+	# 	"StationPropertyHasRail"),
 
 	
-	QuestionForm(
-		[Station], 
-		"Can you get rail connections at {}?", 
-		(lambda s: Pick(s, "has_rail")),
-		"StationPropertyHasRail2"),
+	# QuestionForm(
+	# 	[Station], 
+	# 	"Can you get rail connections at {}?", 
+	# 	(lambda s: Pick(s, "has_rail")),
+	# 	"StationPropertyHasRail2"),
 
 	# --------------------------------------------------------------------------
 	# Line questions
 	# --------------------------------------------------------------------------
 	
-	QuestionForm(
-		[Line], 
-		"How many architectural styles does {} pass through?", 
-		(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-								  "architecture"))) ),
-		"LineTotalArchitectureCount"),
+	# QuestionForm(
+	# 	[Line], 
+	# 	"How many architectural styles does {} pass through?", 
+	# 	(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 							  "architecture"))) ),
+	# 	"LineTotalArchitectureCount"),
 
-	QuestionForm(
-		[Line], 
-		"How many music styles does {} pass through?", 
-		(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-								  "music"))) ),
-		"LineTotalMusicCount"),
+	# QuestionForm(
+	# 	[Line], 
+	# 	"How many music styles does {} pass through?", 
+	# 	(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 							  "music"))) ),
+	# 	"LineTotalMusicCount"),
 
-	QuestionForm(
-		[Line], 
-		"How many sizes of station does {} pass through?", 
-		(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-								  "size"))) ),
-		"LineTotalSizeCount"),
+	# QuestionForm(
+	# 	[Line], 
+	# 	"How many sizes of station does {} pass through?", 
+	# 	(lambda l: Count(Unique(Pluck(Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 							  "size"))) ),
+	# 	"LineTotalSizeCount"),
 
-	QuestionForm(
-		[Music, Line], 
-		"How many stations playing {} does {} pass through?", 
-		lambda v, l: CountIfEqual(
-			Pluck(
-				Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-				"music"
-			),
-			v
-		),
-		"LineFilterMusicCount"),
+	# QuestionForm(
+	# 	[Music, Line], 
+	# 	"How many stations playing {} does {} pass through?", 
+	# 	lambda v, l: CountIfEqual(
+	# 		Pluck(
+	# 			Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 			"music"
+	# 		),
+	# 		v
+	# 	),
+	# 	"LineFilterMusicCount"),
 
-	QuestionForm(
-		[Cleanliness, Line], 
-		"How many {} stations does {} pass through?", 
-		lambda v, l: CountIfEqual(
-			Pluck(
-				Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-				"cleanliness"
-			),
-			v
-		),
-		"LineFilterCleanlinessCount"),
+	# QuestionForm(
+	# 	[Cleanliness, Line], 
+	# 	"How many {} stations does {} pass through?", 
+	# 	lambda v, l: CountIfEqual(
+	# 		Pluck(
+	# 			Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 			"cleanliness"
+	# 		),
+	# 		v
+	# 	),
+	# 	"LineFilterCleanlinessCount"),
 
-	QuestionForm(
-		[Size, Line], 
-		"How many {} stations does {} pass through?", 
-		lambda v, l: CountIfEqual(
-			Pluck(
-				Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-				"size"
-			),
-			v
-		),
-		"LineFilterSizeCount"),
+	# QuestionForm(
+	# 	[Size, Line], 
+	# 	"How many {} stations does {} pass through?", 
+	# 	lambda v, l: CountIfEqual(
+	# 		Pluck(
+	# 			Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 			"size"
+	# 		),
+	# 		v
+	# 	),
+	# 	"LineFilterSizeCount"),
 
-	QuestionForm(
-		[Line], 
-		"How many stations with disabled access does {} pass through?", 
-		lambda l: CountIfEqual(
-			Pluck(
-				Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-				"disabled_access"
-			),
-			True
-		),
-		"LineFilterDisabledAccessCount"),
+	# QuestionForm(
+	# 	[Line], 
+	# 	"How many stations with disabled access does {} pass through?", 
+	# 	lambda l: CountIfEqual(
+	# 		Pluck(
+	# 			Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 			"disabled_access"
+	# 		),
+	# 		True
+	# 	),
+	# 	"LineFilterDisabledAccessCount"),
 
-	QuestionForm(
-		[Line], 
-		"How many stations with rail connections does {} pass through?", 
-		lambda l: CountIfEqual(
-			Pluck(
-				Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
-				"has_rail"
-			),
-			True
-		),
-		"LineFilterHasRailCount"),
+	# QuestionForm(
+	# 	[Line], 
+	# 	"How many stations with rail connections does {} pass through?", 
+	# 	lambda l: CountIfEqual(
+	# 		Pluck(
+	# 			Nodes(Filter(AllEdges(), "line_id", Pick(l, "id"))),
+	# 			"has_rail"
+	# 		),
+	# 		True
+	# 	),
+	# 	"LineFilterHasRailCount"),
 
 	
 	# --------------------------------------------------------------------------
@@ -256,14 +256,14 @@ question_forms = [
 		group="MultiStep"),
 
 
-	QuestionForm(
-		[Station, Station, Cleanliness], 
-		"How many stations are on the shortest path between {} and {} avoiding {} stations?", 
-		(lambda n1, n2 ,c: CountNodesBetween(ShortestPathOnlyUsing(n1, n2, Without(AllNodes(), "cleanliness", c), []))),
-		"StationShortestAvoidingCount",
-		arguments_valid=lambda g, n1, n2, c: n1 != n2,
-		answer_valid=lambda g, a, n1, n2, c: a >= 0,
-		group="MultiStep"),
+	# QuestionForm(
+	# 	[Station, Station, Cleanliness], 
+	# 	"How many stations are on the shortest path between {} and {} avoiding {} stations?", 
+	# 	(lambda n1, n2 ,c: CountNodesBetween(ShortestPathOnlyUsing(n1, n2, Without(AllNodes(), "cleanliness", c), []))),
+	# 	"StationShortestAvoidingCount",
+	# 	arguments_valid=lambda g, n1, n2, c: n1 != n2,
+	# 	answer_valid=lambda g, a, n1, n2, c: a >= 0,
+	# 	group="MultiStep"),
 
 
 	# 'two hops away'
@@ -275,15 +275,15 @@ question_forms = [
 		group="MultiStep"),
 
 
-	QuestionForm(
-		[Station, Architecture],
-		"What's the nearest station to {} with {} architecture?",
-		lambda x, a: Pick(MinBy(
-			FilterHasPathTo(Filter(AllNodes(), "architecture", a), x), 
-			lambda y: Count(ShortestPath(x, y, []))
-		), "name"),
-		"NearestStationArchitecture",
-		group="MultiStep"),
+	# QuestionForm(
+	# 	[Station, Architecture],
+	# 	"What's the nearest station to {} with {} architecture?",
+	# 	lambda x, a: Pick(MinBy(
+	# 		FilterHasPathTo(Filter(AllNodes(), "architecture", a), x), 
+	# 		lambda y: Count(ShortestPath(x, y, []))
+	# 	), "name"),
+	# 	"NearestStationArchitecture",
+	# 	group="MultiStep"),
 
 	QuestionForm(
 		[Station, Station],
@@ -317,11 +317,11 @@ question_forms = [
 		arguments_valid=lambda g, a, b: a != b,
 		answer_valid=lambda g, a, b, c: a != b and a != c),
 
-	QuestionForm(
-		[Architecture, Station], 
-		"Which {} station is adjacent to {}?", 
-		lambda a,b: UnpackUnitList(Pluck(Filter(Neighbors(b), "architecture", a), "name")),
-		"StationArchitectureAdjacent"),
+	# QuestionForm(
+	# 	[Architecture, Station], 
+	# 	"Which {} station is adjacent to {}?", 
+	# 	lambda a,b: UnpackUnitList(Pluck(Filter(Neighbors(b), "architecture", a), "name")),
+	# 	"StationArchitectureAdjacent"),
 
 	QuestionForm(
 		[Station, Station], 
@@ -366,11 +366,11 @@ question_forms = [
 		(lambda a: Pluck(Unique(Nodes(Filter(AllEdges(), "line_id", Pick(a, "id")))), "name")),
 		"LineStations"),
 
-	QuestionForm(
-		[Architecture],
-		"Which line has the most {} stations?",
-		(lambda a: Mode(Pluck(Edges(Filter(AllNodes(), "architecture", a)), "line_name")) ),
-		"LineMostArchitecture"),
+	# QuestionForm(
+		# [Architecture],
+		# "Which line has the most {} stations?",
+		# (lambda a: Mode(Pluck(Edges(Filter(AllNodes(), "architecture", a)), "line_name")) ),
+		# "LineMostArchitecture"),
 
 
 

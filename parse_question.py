@@ -10,10 +10,10 @@ def parse_questions(yaml_filepath, graph_id):
         questions = []
         questions_nl = []
         answers = []
+        args_list = []
         for data in docs:
             if data['graph']['id'] == graph_id:
                 question_nl = data['question']['english']
-                # print(question_nl)
                 for i, regex in enumerate(question_forms):
                     match = regex.match(question_nl)
                     if match:
@@ -25,10 +25,11 @@ def parse_questions(yaml_filepath, graph_id):
                         asp_question = question_form_asp[i].format(*args)
                         questions.append(asp_question)
                         questions_nl.append(question_nl)
+                        args_list.append(args)
                         break
                 
 
-    return questions, questions_nl, answers
+    return questions, questions_nl, answers, args_list
 
 
 question_forms = [
@@ -71,8 +72,8 @@ question_forms = [
     re.compile("Which ([a-zA-Z]+) station is adjacent to ([a-zA-Z]+)\?"),
     re.compile(
         "Are ([a-zA-Z]+) and ([a-zA-Z]+) connected by the same station\?"),
-    re.compile("Is there a station called ([a-zA-Z]+)\?"),
-    re.compile("Is there a station called ([a-zA-Z]+)\?"),
+    re.compile("Is there a station called ([a-zA-Z0-9]+)\?"),
+    re.compile("Is there a station called ([a-zA-Z0-9]+)\?"),
     re.compile("Which lines is ([a-zA-Z]+) on\?"),
     re.compile("How many lines is ([a-zA-Z]+) on\?"),
     re.compile("Are ([a-zA-Z]+) and ([a-zA-Z]+) on the same line\?"),
