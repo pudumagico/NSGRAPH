@@ -15,7 +15,7 @@ conda activate NSGRAPH
 
 ## Reproducing Experiments
 To reproduce the numbers presented in the paper, please download the data used from [here](https://drive.google.com/file/d/1IwKL55rmh5r8pBNLNo1IRBjT5J9YCbqo/view?usp=share_link).
-Then, use the following command to execute the inference process over the data
+Then, use the following commands to execute the inference process over the data:
 ```
 python main.py -fp <path_to_data_folder>
 python main.py -fp <path_to_data_folder> -ocrgt True
