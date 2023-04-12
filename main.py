@@ -13,8 +13,7 @@ from parse_background_knowledge import fill_background_knowledge, gt_data, aspif
 # reader = easyocr.Reader(['en'], detect_network = 'dbnet18')
 reader = easyocr.Reader(['en'])
 
-def main(fp, gt, ocrgt, ogrgt):
-    data_filepath = fp
+def main(data_filepath, gt, ocrgt, ogrgt):
 
     USE_GT = gt
     USE_OCR_GT = ocrgt
@@ -35,7 +34,7 @@ def main(fp, gt, ocrgt, ogrgt):
     start = time.time()
 
     for graph in png_files:
-        f = open('{}/{}.lp'.format(fp, graph.strip('.png')), "w")
+        f = open('{}/{}.lp'.format(data_filepath, graph.strip('.png')), "w")
 
         questions, questions_nl, answers, args_list = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
@@ -53,7 +52,6 @@ def main(fp, gt, ocrgt, ogrgt):
                     name_dict = parse_labels(os.path.abspath(
                         data_filepath) + '/' + graph, reader, args_list)
                 
-                # print(name_dict)
                 if USE_OGR_GT:
                     nodes, edges = gt_graph(os.path.abspath(
                         data_filepath) + '/' + yaml_filename, str(graph).strip('.png'), name_dict)
@@ -74,7 +72,6 @@ def main(fp, gt, ocrgt, ogrgt):
         f.write(lines)
         f.close()
 
-
         for i in range(len(questions)):
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
 
@@ -84,7 +81,6 @@ def main(fp, gt, ocrgt, ogrgt):
             models = []
             with ctl.solve(yield_=True) as handle:
                 for m in handle:
-                    # print(m)
                     models.append(m)
 
             if type(answers[i]) == list:
