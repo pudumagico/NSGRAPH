@@ -35,7 +35,7 @@ def main(fp, gt, ocrgt, ogrgt):
     start = time.time()
 
     for graph in png_files:
-        f = open('clevr-graph/data/{}.lp'.format(graph.strip('.png')), "w")
+        f = open('{}/{}.lp'.format(fp, graph.strip('.png')), "w")
 
         questions, questions_nl, answers, args_list = parse_questions(os.path.abspath(
             data_filepath) + '/' + yaml_filename, str(graph).strip('.png'))
