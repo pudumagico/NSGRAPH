@@ -14,7 +14,7 @@ TASK_MISSED = "task_missed"
 NO_ANSWER = "no_answer"
 
 CLASSES = [FULL_MATCH, CONTAINS_SOLUTION, WRONG_CLASSIFICATION, CONTAINS_PREDICATES, TASK_MISSED, NO_ANSWER]
-MODELS = ["GPT 3.5", "GPT 4", "GPT4ALL", "Vicuna 13b", "Bard"]
+MODELS = ["GPT 3.5", "GPT 4", "GPT4ALL", "Vicuna 13b", "Bard", "Zephyr7b"]
 MODELS += [m + "_survey" for m in MODELS]
 ALL_SOLUTIONS = [
     "end(3).countNodesBetween(2).shortestPath(1).station(0,{}).station(0,{}).",

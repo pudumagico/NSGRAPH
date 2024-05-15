@@ -7,7 +7,7 @@ class AbstractModel:
         self._model_name = model_name + ("_survey" if use_survey_data else "")
         self.__logfile = None
         self._setup_logfile(log_path)
-        self.__get_prompts = PromptBuilder().survey_prompts if use_survey_data else PromptBuilder.generated_prompts
+        self.__get_prompts = PromptBuilder().survey_prompts if use_survey_data else PromptBuilder().generated_prompts
 
     def _setup_logfile(self, log_path):
         if not os.path.exists(log_path): os.makedirs(log_path)
