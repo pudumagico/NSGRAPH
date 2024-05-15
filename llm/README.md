@@ -1,6 +1,6 @@
 # LLM-Question-Parsing
 
-This repository is part of my bachelor thesis and provides the code to test different LLMs with precompiled prompts.
+This folder provides the code to test different LLMs with precompiled prompts.
 
 The prompts are static and can be generated using prompt_builder.py
 
