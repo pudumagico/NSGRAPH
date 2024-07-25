@@ -12,8 +12,8 @@ dependencies:
   - brotli=1.0.9=h5eee18b_7
   - brotli-bin=1.0.9=h5eee18b_7
   - brotlipy=0.7.0=py39h27cfd23_1003
-  - ca-certificates=2022.12.7=ha878542_0
-  - certifi=2022.12.7=pyhd8ed1ab_0
+  - ca-certificates=2024.7.2=h06a4308_0
+  - certifi=2024.7.4=py39h06a4308_0
   - cffi=1.15.1=py39h74dc2b5_0
   - chardet=4.0.0=py39h06a4308_1003
   - clingo=5.6.2=py39h3fd9d12_0
@@ -39,9 +39,11 @@ dependencies:
   - lcms2=2.12=h3be6417_0
   - ld_impl_linux-64=2.38=h1181459_1
   - lerc=3.0=h295c915_0
+  - libblas=3.9.0=12_linux64_mkl
   - libbrotlicommon=1.0.9=h5eee18b_7
   - libbrotlidec=1.0.9=h5eee18b_7
   - libbrotlienc=1.0.9=h5eee18b_7
+  - libcblas=3.9.0=12_linux64_mkl
   - libclang=10.0.1=default_hb85057a_2
   - libdeflate=1.17=h5eee18b_0
   - libedit=3.1.20221030=h5eee18b_0
@@ -51,6 +53,7 @@ dependencies:
   - libgfortran-ng=11.2.0=h00389a5_1
   - libgfortran5=11.2.0=h1234567_1
   - libgomp=11.2.0=h1234567_1
+  - liblapack=3.9.0=12_linux64_mkl
   - libllvm10=10.0.1=hbcb73fb_5
   - libpng=1.6.39=h5eee18b_0
   - libpq=12.9=h16c4e8d_3
@@ -72,8 +75,7 @@ dependencies:
   - ncurses=6.4=h6a678d5_0
   - nspr=4.33=h295c915_0
   - nss=3.74=h0370c37_0
-  - numpy-base=1.23.5=py39h31eccc5_0
-  - openssl=1.1.1t=h7f8727e_0
+  - openssl=1.1.1w=h7f8727e_0
   - pcre=8.45=h295c915_0
   - pip=23.0.1=py39h06a4308_0
   - ply=3.11=py39h06a4308_0
@@ -87,6 +89,7 @@ dependencies:
   - pysocks=1.7.1=py39h06a4308_0
   - python=3.9.0=hdb3f193_2
   - python-dateutil=2.8.2=pyhd3eb1b0_0
+  - python_abi=3.9=2_cp39
   - qt-main=5.15.2=h327a75a_7
   - qt-webengine=5.15.9=hd2b0992_4
   - qtwebkit=5.212=h4eab89a_4
@@ -103,37 +106,39 @@ dependencies:
   - tqdm=4.64.1=py39h06a4308_0
   - tzdata=2022g=h04d1e81_0
   - urllib3=1.26.14=py39h06a4308_0
+  - webcolors=24.6.0=pyhd8ed1ab_0
   - wheel=0.38.4=py39h06a4308_0
   - xz=5.2.10=h5eee18b_1
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.5.2=ha4553b6_0
   - pip:
-    - bezier==2021.2.12
-    - charset-normalizer==3.0.1
-    - easyocr==1.6.2
-    - gibberish==0.4.0
-    - imageio==2.26.0
-    - matplotlib==3.5.1
-    - networkx==3.0
-    - ninja==1.11.1
-    - numpy==1.24.2
-    - nvidia-cublas-cu11==11.10.3.66
-    - nvidia-cuda-nvrtc-cu11==11.7.99
-    - nvidia-cuda-runtime-cu11==11.7.99
-    - nvidia-cudnn-cu11==8.5.0.96
-    - opencv-contrib-python==4.5.1.48
-    - packaging==23.0
-    - pillow==9.4.0
-    - pyclipper==1.3.0.post4
-    - python-bidi==0.4.2
-    - pywavelets==1.4.1
-    - pyyaml==6.0
-    - requests==2.28.2
-    - scikit-image==0.19.3
-    - scipy==1.10.1
-    - shapely==2.0.1
-    - tifffile==2023.2.27
-    - torch==1.13.1
-    - torchvision==0.14.1
-    - typing-extensions==4.5.0
-prefix: /home/pudu/anaconda3/envs/NSGRAPH
+      - bezier==2021.2.12
+      - charset-normalizer==3.0.1
+      - easyocr==1.6.2
+      - gibberish==0.4.0
+      - imageio==2.26.0
+      - matplotlib==3.5.1
+      - networkx==3.0
+      - ninja==1.11.1
+      - numpy==1.24.2
+      - nvidia-cublas-cu11==11.10.3.66
+      - nvidia-cuda-nvrtc-cu11==11.7.99
+      - nvidia-cuda-runtime-cu11==11.7.99
+      - nvidia-cudnn-cu11==8.5.0.96
+      - opencv-contrib-python==4.5.1.48
+      - opencv-python-headless==4.5.4.60
+      - packaging==23.0
+      - pillow==9.4.0
+      - pyclipper==1.3.0.post4
+      - python-bidi==0.4.2
+      - pywavelets==1.4.1
+      - pyyaml==6.0
+      - requests==2.28.2
+      - scikit-image==0.19.3
+      - scipy==1.10.1
+      - shapely==2.0.1
+      - tifffile==2023.2.27
+      - torch==1.13.1
+      - torchvision==0.14.1
+      - typing-extensions==4.5.0
+prefix: /home/nhiguera/miniconda3/envs/NSGRAPH

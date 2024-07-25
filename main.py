@@ -32,8 +32,12 @@ def main(data_filepath, gt, ocrgt, ogrgt):
     incorrect = 0
 
     start = time.time()
+    parsing_time = 0
+    reasoning_time = 0
 
     for graph in png_files:
+        start_parsing = time.time()
+
         f = open('{}/{}.lp'.format(data_filepath, graph.strip('.png')), "w")
 
         questions, questions_nl, answers, args_list = parse_questions(os.path.abspath(
@@ -66,13 +70,18 @@ def main(data_filepath, gt, ocrgt, ogrgt):
                 total += len(questions)
                 incorrect += len(questions)
                 continue            
-
+        end_parsing = time.time()
+        parsing_time += end_parsing - start_parsing
         f.write(nodes)
         f.write(edges)
         f.write(lines)
         f.close()
 
+
+
         for i in range(len(questions)):
+            start_reasoning = time.time()
+
             ctl = clingo.Control(["--warn=none", "--opt-strategy=usc", "-n 0"])
 
             ctl.add("base", [], nodes+edges+lines+questions[i])
@@ -117,12 +126,17 @@ def main(data_filepath, gt, ocrgt, ogrgt):
 
             total += 1
 
+            end_reasoning = time.time()
+            reasoning_time += end_reasoning - start_reasoning
+
         if total % 50 == 0:
             partial_end = time.time()
             print('Partial Correct Answers:', total-incorrect)
             print('Partial Total Questions:', total)
             print('Partial Accuracy:', (total-incorrect)/total * 100)
             print('Partial Time:', partial_end - start)
+            print('Partial Parsing Time:', parsing_time)
+            print('Partial Reasoning Time:', reasoning_time)
 
     end = time.time()
 
@@ -130,7 +144,8 @@ def main(data_filepath, gt, ocrgt, ogrgt):
     print('Total Questions:', total)
     print('Accuracy:', (total-incorrect)/total * 100)
     print('Time:', end - start)
-
+    print('Parsing Time:', parsing_time)
+    print('Reasoning Time:', reasoning_time)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
